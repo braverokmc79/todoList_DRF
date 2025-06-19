@@ -5,9 +5,48 @@
 {% block content %}
 
 <div class="container">
+    <h2>Crete a New Todo</h2>
+
+     <form method="post" id="todoForm" >
+        {% csrf_token %}
+        <div>
+            <label for="name">Name:</label>
+            <input type="text" name="name" id="name" required  />
+        </div>
+
+        <div>
+            <label for="description">Description:</label>
+            <textarea type="text" name="description" id="description" required ></textarea>
+        </div>
+
+            <div>
+            <label for="complete">Complete:</label>
+            <input type="checkbox" name="complete" id="complete"  required />
+        </div>
+
+        <div>
+            <label for="exp">Experience Points:</label>
+            <input type="number" name="exp" id="exp"   min="0" required  />
+        </div>
+
+    
+         <button type="submit" id="todoCreate">Create</button>
+    
+     </form>
 
 </div>
 
+
+<script>
+document.getElementById('todoForm').addEventListener('submit', function(event) {
+    // required 조건은 브라우저가 자동 처리
+    const name = document.getElementById('name').value;
+    const description = document.getElementById('description').value;
+    const complete = document.getElementById('complete').checked;
+    const exp = document.getElementById('exp').value;
+    console.log(name, description, complete, exp);
+});  
+</script>
 
 {% endblock %}
 

@@ -14,12 +14,13 @@
            완료날짜 : {{ todo.completed_at}}<br/>
            경험치 : {{ todo.exp}}        
         </div>
+
+          <hr>
     {% empty %}
     <p>등록된 할일이 없습니다.</p>
     {% endfor %}
 
-    <hr>
-
+ 
     <button class="todoCreate" id="createBtn">Todo 등록하기</button>
 </div>
 
@@ -33,7 +34,8 @@
 
     //버튼을 클릭하면 서버에 접속해라
     document.getElementById('createBtn').addEventListener('click', () => {
-           console.log('createBtn click!')
+           console.log('createBtn click!');
+           location.href = "{% url 'todo:todo_Create' %}"
     })
 
  

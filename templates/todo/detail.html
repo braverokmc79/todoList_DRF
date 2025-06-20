@@ -1,13 +1,22 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-</head>
-<body>
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
 
-    상세보기
-    
-</body>
-</html>
+<div class="todoDetail"></div>
+<div>
+
+    <p><strong>Name:</strong> {{todo.name}}</p>
+    <p><strong>Description:</strong> {{todo.description}}</p>
+    <p><strong>Complete:</strong> {{todo.complete}}</p>
+    <p><strong>Completed At:</strong> {{todo.completed_at}}</p>
+    <p><strong>Experience Points:</strong> {{todo.exp}}</p>
+
+
+    <button onclick="location.href = '{% url 'todo:todo_List' %}'">목록으로</button>
+    <button class="todoUpdate">수정</button>
+    <button class="todoDelete">삭제</button>
+</div>
+
+
+
+{% endblock %}

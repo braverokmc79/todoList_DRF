@@ -2,11 +2,17 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-</head>
+    {% include "head.html" %}
+</head>    
 <body>
+    {% include "header.html" %}
     {% block content %}{% endblock %}
+    {% include "footer.html" %}
+
+
+<!-- Global Scripts 순서가 중요하다  -->
+<script src="{% static 'js/getCookie.js' %}"></script>
+<script src="{% static 'js/axiosInstance.js' %}"></script>
+
 </body>
 </html>

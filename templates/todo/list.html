@@ -1,45 +1,130 @@
 {% extends 'base.html' %}
 {% load static %}
 
-
 {% block content %}
 
-<div class="todocontainer">
+<div class="todocontainer"></div>
+<button class="todoCreate" id="createBtn">Todo 등록하기</button>
 
-     {% for todo in todos %}
-        <div class="todo-item">    
-           제목 : {{ todo.name}} <br/>
-           내용: {{ todo.description}}<br/>
-           완료여부 : {{ todo.complete}} <br/>
-           완료날짜 : {{ todo.completed_at}}<br/>
-           경험치 : {{ todo.exp}}        
-        </div>
-
-          <hr>
-    {% empty %}
-    <p>등록된 할일이 없습니다.</p>
-    {% endfor %}
-
- 
-    <button class="todoCreate" id="createBtn">Todo 등록하기</button>
-</div>
-
-
+<div class="pagination"></div>
 
 <script>
-    //문서가 로드되면 리스트 항목을 불러와라
-    document.addEventListener('DOMContentLoaded', () => {
-        console.log("list loding!!!")
+// 1. 페이지 로드 시 초기화
+document.addEventListener('DOMContentLoaded', init);
+
+// 2. 초기화 함수 - UI 이벤트 바인딩 및 첫 페이지 목록 불러오기
+function init() {
+    UIEvents();              // 버튼 클릭 등 UI 이벤트 등록
+    loadTodoList(1);         // 첫 페이지 Todo 목록 불러오기
+}
+
+// 3. UI 이벤트 등록 (예: "등록하기" 버튼 클릭 시 이동)
+function UIEvents() {
+    document.getElementById('createBtn').addEventListener('click', onCreateClick);
+}
+
+// 4. "등록하기" 버튼 클릭 시 작성 페이지로 이동
+function onCreateClick() {
+    window.location.href = "/todo/create";
+}
+
+// 5. 특정 페이지의 Todo 리스트를 불러오고 렌더링
+function loadTodoList(page) {
+    fetchTodoList(page)
+        .then(data => {
+            console.log("전체 응답 데이터", data);
+            const todos = extractTodoArray(data);  // 실제 Todo 배열 추출
+            console.log("Todo 목록", todos);
+            renderTodoList(todos);                // 목록 렌더링
+
+            // 향후 페이지네이션 추가 시 주석 해제
+            // renderPagination(data, page);
+        })
+        .catch(err => console.log("리스트 로드 실패", err));
+}
+
+// 6. axiosInstance로 서버에서 Todo 목록 가져오기
+async function fetchTodoList(page) {
+    return await axiosInstance.get(`/todo/api/list?page=${page}`).then(res => res.data);
+}
+
+// 7. 받아온 데이터에서 Todo 배열만 추출
+function extractTodoArray(data) {
+    if (Array.isArray(data)) return data;              // 단순 배열 응답
+    if (Array.isArray(data.results)) return data.results; // DRF pagination 구조
+    return [];
+}
+
+// 8. 전체 Todo 목록을 DOM에 렌더링
+function renderTodoList(todos) {
+    const container = document.querySelector('.todocontainer');
+    container.innerHTML = ''; // 기존 내용 초기화
+
+    todos.forEach(todo => {
+        const item = createTodoItem(todo);
+        container.appendChild(item);
+    });
+}
+
+// 9. 개별 Todo 항목 HTML 생성
+function createTodoItem(todo) {
+    const div = document.createElement('div');
+    div.className = "todo-item";
+
+    if (todo.complete) {
+        div.classList.add('complete'); // 완료된 항목 스타일 지정
+    }
+
+    // 클릭 시 상세 페이지 이동
+    div.addEventListener('click', () => detailView(todo.id));
+
+    // HTML 구성
+    div.innerHTML = `
+        <p><strong>Name:</strong> ${todo.name}</p>
+        <p><strong>Description:</strong> ${todo.description}</p>
+        <p><strong>Complete:</strong> ${todo.complete}</p>
+        <p><strong>Completed At:</strong> ${datetimeToString(todo.completed_at)}</p>
+        <p><strong>Experience Points:</strong> ${todo.exp}</p>
+        <button class="completeBtn">완료</button>
+        <hr>
+    `;
+
+    // 완료 버튼 클릭 시 완료 처리
+    div.querySelector('.completeBtn').addEventListener('click', (e) => {
+        e.stopPropagation();       // 상세페이지 이동 막기
+        completeTodo(todo.id);     // 완료 처리 함수 호출
     });
 
-    //버튼을 클릭하면 서버에 접속해라
-    document.getElementById('createBtn').addEventListener('click', () => {
-           console.log('createBtn click!');
-           location.href = "{% url 'todo:todo_Create' %}"
-    })
+    return div;
+}
 
- 
+// 10. (미구현) 페이지네이션 렌더링 - 추후 구현 예정
+function renderPagination(data, page) {
+    console.log("페이지네이션용 데이터", data);
+}
+
+// 11. Todo 항목 클릭 시 상세 페이지로 이동
+function detailView(id) {
+    window.location.href = `/todo/detail/${id}`;
+}
+
+// ⚠️ 누락된 함수 예시 - 실제로는 프로젝트 내에 존재해야 작동합니다
+function datetimeToString(datetime) {
+    if (!datetime) return '';
+    const date = new Date(datetime);
+    return date.toLocaleString(); // "2025.6.19 오후 9:12:34" 등으로 출력
+}
+
+// ⚠️ 완료 처리 함수 예시 - 실제 서버와 통신 구현 필요
+function completeTodo(id) {
+    axiosInstance.post(`/todo/api/complete/${id}`)
+        .then(() => {
+            alert('완료 처리되었습니다.');
+            loadTodoList(1); // 완료 후 목록 다시 불러오기
+        })
+        .catch(err => console.error('완료 처리 실패:', err));
+}
+
 </script>
-
 
 {% endblock content %}

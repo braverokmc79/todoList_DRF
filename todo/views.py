@@ -1,6 +1,7 @@
+from ast import Delete
 from django.shortcuts import render
 from .models import Todo
-from django.views.generic import ListView ,CreateView,DetailView
+from django.views.generic import ListView ,CreateView,DetailView,DeleteView
 from django.urls import reverse_lazy
 
 
@@ -31,6 +32,15 @@ class TodoDetailViews(DetailView): #제너릭뷰
     model = Todo
     template_name = "todo/detail.html"
     context_object_name = "todo"
+
+
+class TodoUpdateViews(CreateView): #제너릭뷰
+    model = Todo
+    template_name = "todo/update.html"  
+    fields = ['name', 'description', 'complete', 'exp']
+    success_url = reverse_lazy("todo_List")
     
     
+class TodoDeleteViews(DeleteView): #제너릭뷰  
+    pass
     

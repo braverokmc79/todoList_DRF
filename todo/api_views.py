@@ -42,3 +42,25 @@ class TodoRetrieveAPI(APIView):
         serializer = TodoSerializer(todo)
         return Response(serializer.data, status=status.HTTP_200_OK)
     
+    
+class TodoUpdateAPI(APIView):         
+      def put(self, request, pk):
+        try:
+            todo = Todo.objects.get(pk=pk)
+        except Todo.DoesNotExist:
+            return Response({"error": "해당 Todo가 존재하지 않습니다."}, status=status.HTTP_404_NOT_FOUND)
+            
+        print(f"⭕TodoUpdateAPI : {pk} : {todo}  ")    
+        serializer = TodoSerializer(todo, data=request.data, partial=True)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    
+    
+  
+
+class TodoDeleteAPI(APIView):
+      pass 
+  
+  

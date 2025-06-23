@@ -8,25 +8,43 @@
 
 <div class="pagination"></div>
 
+
+
+
+
 <script>
-// 1. 페이지 로드 시 초기화
+
+// 1. 문서가 완전히 로드되면 초기화 함수 실행
 document.addEventListener('DOMContentLoaded', init);
 
-// 2. 초기화 함수 - UI 이벤트 바인딩 및 첫 페이지 목록 불러오기
+// 2. 초기화: UI 이벤트 연결 및 첫 페이지 Todo 목록 로드
 function init() {
-    UIEvents();              // 버튼 클릭 등 UI 이벤트 등록
-    loadTodoList(1);         // 첫 페이지 Todo 목록 불러오기
+    UIEvents(); // 2-1. 버튼 이벤트 연결
+    loadTodoList(1); // 2-2. 첫 페이지 목록 불러오기
 }
 
-// 3. UI 이벤트 등록 (예: "등록하기" 버튼 클릭 시 이동)
+// 2-1. UI 이벤트 바인딩: "Todo 등록하기" 버튼 클릭 시 등록 페이지로 이동
 function UIEvents() {
-    document.getElementById('createBtn').addEventListener('click', onCreateClick);
+    document.getElementById('createBtn')
+        .addEventListener('click', onCreateClick);
 }
 
-// 4. "등록하기" 버튼 클릭 시 작성 페이지로 이동
+// 2-1-1. 등록 버튼 클릭 시 /todo/create/로 이동
 function onCreateClick() {
-    window.location.href = "/todo/create";
+    window.location.href = '/todo/create/';
 }
+
+// 3. 서버에서 Todo 목록 불러오기
+function loadTodoList(page) {
+    fetchTodoData(page)  // 3-1. 서버로부터 데이터 요청
+        .then(data => {
+            const todos = extractTodoArray(data);  // 3-2. 실제 Todo 리스트 추출
+            renderTodoList(todos);  // 3-3. 화면에 Todo 목록 출력
+            renderPagination(data, page); // 3-4. 페이지네이션 표시
+        })
+        .catch(err => console.error('리스트 로드 실패:', err));
+} 
+
 
 // 5. 특정 페이지의 Todo 리스트를 불러오고 렌더링
 function loadTodoList(page) {
@@ -48,37 +66,48 @@ async function fetchTodoList(page) {
     return await axiosInstance.get(`/todo/api/list?page=${page}`).then(res => res.data);
 }
 
-// 7. 받아온 데이터에서 Todo 배열만 추출
+
+// 3-2. API 응답 형식에 따라 Todo 배열 추출
 function extractTodoArray(data) {
-    if (Array.isArray(data)) return data;              // 단순 배열 응답
-    if (Array.isArray(data.results)) return data.results; // DRF pagination 구조
+    // 1) CustomPageNumberPagination 사용 시
+    if (Array.isArray(data.data)) {
+        return data.data;
+    }
+    // 2) 기본 PageNumberPagination 사용 시
+    if (Array.isArray(data.results)) {
+        return data.results;
+    }
+    // 3) Pagination 없이 순수 배열 리턴 시
+    if (Array.isArray(data)) {
+        return data;
+    }
     return [];
 }
 
-// 8. 전체 Todo 목록을 DOM에 렌더링
+
+
+// 3-3. 추출된 Todo 항목들을 화면에 렌더링
 function renderTodoList(todos) {
     const container = document.querySelector('.todocontainer');
-    container.innerHTML = ''; // 기존 내용 초기화
+    container.innerHTML = '';
+    todos.forEach(todo => container.appendChild(createTodoElement(todo)));
+} 
 
-    todos.forEach(todo => {
-        const item = createTodoItem(todo);
-        container.appendChild(item);
-    });
-}
 
-// 9. 개별 Todo 항목 HTML 생성
-function createTodoItem(todo) {
+// 3-3-1. 단일 Todo 객체를 HTML 요소로 생성
+function createTodoElement(todo) {
     const div = document.createElement('div');
-    div.className = "todo-item";
+    div.className = 'todo-item';
 
+    // 완료된 항목이면 밑줄 적용
     if (todo.complete) {
-        div.classList.add('complete'); // 완료된 항목 스타일 지정
+        div.classList.add('completed');
     }
 
-    // 클릭 시 상세 페이지 이동
+    // 목록 클릭 시 상세 페이지 이동
     div.addEventListener('click', () => detailView(todo.id));
 
-    // HTML 구성
+    // HTML 내용 설정
     div.innerHTML = `
         <p><strong>Name:</strong> ${todo.name}</p>
         <p><strong>Description:</strong> ${todo.description}</p>
@@ -86,45 +115,77 @@ function createTodoItem(todo) {
         <p><strong>Completed At:</strong> ${datetimeToString(todo.completed_at)}</p>
         <p><strong>Experience Points:</strong> ${todo.exp}</p>
         <button class="completeBtn">완료</button>
-        <hr>
     `;
 
-    // 완료 버튼 클릭 시 완료 처리
-    div.querySelector('.completeBtn').addEventListener('click', (e) => {
-        e.stopPropagation();       // 상세페이지 이동 막기
-        completeTodo(todo.id);     // 완료 처리 함수 호출
-    });
+    // 완료 버튼 클릭 시 완료 API 호출
+    div.querySelector('.completeBtn')
+        .addEventListener('click', e => {
+            e.stopPropagation();
+            toComplete(todo.id); //현재 todo 객체의 고유번호
+        });
 
     return div;
 }
 
-// 10. (미구현) 페이지네이션 렌더링 - 추후 구현 예정
-function renderPagination(data, page) {
-    console.log("페이지네이션용 데이터", data);
-}
 
-// 11. Todo 항목 클릭 시 상세 페이지로 이동
-function detailView(id) {
-    window.location.href = `/todo/detail/${id}`;
-}
 
-// ⚠️ 누락된 함수 예시 - 실제로는 프로젝트 내에 존재해야 작동합니다
+
 function datetimeToString(datetime) {
     if (!datetime) return '';
     const date = new Date(datetime);
     return date.toLocaleString(); // "2025.6.19 오후 9:12:34" 등으로 출력
 }
 
-// ⚠️ 완료 처리 함수 예시 - 실제 서버와 통신 구현 필요
-function completeTodo(id) {
-    axiosInstance.post(`/todo/api/complete/${id}`)
-        .then(() => {
-            alert('완료 처리되었습니다.');
-            loadTodoList(1); // 완료 후 목록 다시 불러오기
-        })
+// 3-3-2. 완료 버튼 클릭 시 해당 Todo 항목을 완료 상태로 변경
+//주소 요청이 들어오면 complete을 true로 변경하고, loadTodoList 함수를 실행해라.아니면 완료 실패 메시지를 콘솔로그에 띄워라
+function toComplete(id) { //매개변수 이름 todo.id 값이 전달됨
+    axiosInstance.patch(`/todo/viewsets/view/${id}/`, { complete: true })
+    //todo/api/update/${id}
+
+        .then(() => loadTodoList(1))
         .catch(err => console.error('완료 처리 실패:', err));
 }
 
+// 3-3-3. 상세 페이지로 이동
+function detailView(id) {
+    window.location.href = `/todo/detail/${id}/`;
+}
+
+
+
+// 3-4. 페이지네이션 구성 (← 이전, 1 2 3, → 다음)
+function renderPagination(data, currentPage) {
+    const wrapper = document.querySelector('.pagination');
+    wrapper.innerHTML = '';
+
+    const totalPages = data.page_count;
+
+     // 이전 페이지 버튼
+    const prevBtn = document.createElement('button');
+    prevBtn.innerText = '‹';
+    prevBtn.disabled = !data.previous;
+    prevBtn.addEventListener('click', () => loadTodoList(currentPage - 1));
+    wrapper.appendChild(prevBtn);
+
+    // 개별 페이지 버튼들 생성
+    for (let i = 1; i <= totalPages; i++) {
+        const btn = document.createElement('button');
+        btn.innerText = i;
+        if (i === currentPage) { //엄격한비교
+            btn.disabled = true;
+            btn.classList.add('active');  // CSS로 .active 스타일 지정
+        }
+        btn.addEventListener('click', () => loadTodoList(i));
+        wrapper.appendChild(btn);
+    }
+
+    // 다음 페이지 버튼
+    const nextBtn = document.createElement('button');
+    nextBtn.innerText = '›';
+    nextBtn.disabled = !data.next;
+    nextBtn.addEventListener('click', () => loadTodoList(currentPage + 1));
+    wrapper.appendChild(nextBtn);
+}
 </script>
 
 {% endblock content %}

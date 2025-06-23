@@ -14,6 +14,10 @@ urlpatterns = [
   path("create/", views.TodoCreateViews.as_view(), name="todo_Create"),
   #http://127.0.0.1:8000/todo/detail/1
   path("detail/<int:pk>/", views.TodoDetailViews.as_view(), name="todo_Detail"),
+  #http://127.0.0.1:8000/todo/update/1
+  path("update/<int:pk>/", views.TodoUpdateViews.as_view(), name="todo_Update"),
+  #http://127.0.0.1:8000/todo/delete/1
+  path("delete/<int:pk>/", views.TodoDeleteViews.as_view(), name="todo_Delete"),
  
  
  
@@ -24,6 +28,12 @@ urlpatterns = [
   path("api/create/", api_views.TodoCreateAPI.as_view(), name="todo_api_create"),  
   #http://127.0.0.1:8000/todo/retrieve/1/
   path("api/retrieve/<int:pk>/", api_views.TodoRetrieveAPI.as_view(), name="todo_api_retrieve"),
+  #http://127.0.0.1:8000/todo/api/update/1
+  path("api/update/<int:pk>/", api_views.TodoUpdateAPI.as_view(), name="todo_api_update"),
+  #http://127.0.0.1:8000/todo/api/delete/1
+  path("api/delete/<int:pk>/", api_views.TodoDeleteAPI.as_view(), name="todo_api_delete"),
+  
+
   
 ]
 

@@ -12,9 +12,9 @@
     <p><strong>Experience Points:</strong> {{todo.exp}}</p>
 
 
-    <button onclick="location.href = '{% url 'todo:todo_List' %}'">목록으로</button>
-    <button class="todoUpdate">수정</button>
-    <button class="todoDelete">삭제</button>
+    <a href ="{% url 'todo:todo_List' %}">목록으로</a>
+    <a class="todoUpdate">수정</a>
+    <a class="todoDelete">삭제</a>
 </div>
 
 

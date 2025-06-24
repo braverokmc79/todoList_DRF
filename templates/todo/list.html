@@ -141,7 +141,6 @@ function datetimeToString(datetime) {
 function toComplete(id) { //매개변수 이름 todo.id 값이 전달됨
     axiosInstance.patch(`/todo/viewsets/view/${id}/`, { complete: true })
     //todo/api/update/${id}
-
         .then(() => loadTodoList(1))
         .catch(err => console.error('완료 처리 실패:', err));
 }

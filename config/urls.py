@@ -8,6 +8,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path("todo/", include("todo.urls")),
     path("", lambda request:redirect("todo:todo_List") ),
+    path("api-auth/", include("rest_framework.urls")  , name="login"),
 ]
 
 

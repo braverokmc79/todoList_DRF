@@ -13,10 +13,17 @@
 
 
     <a href ="{% url 'todo:todo_List' %}">목록으로</a>
-    <a class="todoUpdate">수정</a>
-    <a class="todoDelete">삭제</a>
+    
+    <a  href ="{% url 'todo:todo_Update' pk=todo.id %}" class="todoUpdate">수정</a>
+    <button class="todoDelete" onclick="deleteTodo({{todo.id}})">삭제</button>
 </div>
 
+
+<scrip>
+
+
+
+</scrip>
 
 
 {% endblock %}

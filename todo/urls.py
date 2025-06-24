@@ -16,10 +16,7 @@ urlpatterns = [
   path("detail/<int:pk>/", views.TodoDetailViews.as_view(), name="todo_Detail"),
   #http://127.0.0.1:8000/todo/update/1
   path("update/<int:pk>/", views.TodoUpdateViews.as_view(), name="todo_Update"),
-  #http://127.0.0.1:8000/todo/delete/1
-  path("delete/<int:pk>/", views.TodoDeleteViews.as_view(), name="todo_Delete"),
- 
- 
+
  
   #http://127.0.0.1:8000/todo/api/list/
   # apiViews

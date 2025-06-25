@@ -39,12 +39,6 @@ function loadTodoIntoDetail(pk) {
 }
 
 
-function datetimeToString(datetime) {
-    if (!datetime) return '';
-    const date = new Date(datetime);
-    return date.toLocaleString(); // "2025.6.19 오후 9:12:34" 등으로 출력
-}
-
 // --- 5. 받아온 todo 데이터를 화면에 랜더링(출력) ---
 function renderTodoDetail(todo) {
   const container = document.querySelector(".todoDetail");

@@ -1,6 +1,7 @@
 from django.urls import path
 from . import views
 from . import api_views
+from .generic_api_view import *
 
 app_name = "todo"  # 네임스페이스 지정
   
@@ -19,18 +20,37 @@ urlpatterns = [
 
  
   #http://127.0.0.1:8000/todo/api/list/
-  # apiViews
-  path("api/list/", api_views.TodoListAPI.as_view(), name="todo_api_list"),
   #http://127.0.0.1:8000/todo/api/create/
-  path("api/create/", api_views.TodoCreateAPI.as_view(), name="todo_api_create"),  
   #http://127.0.0.1:8000/todo/retrieve/1/
-  path("api/retrieve/<int:pk>/", api_views.TodoRetrieveAPI.as_view(), name="todo_api_retrieve"),
   #http://127.0.0.1:8000/todo/api/update/1
-  path("api/update/<int:pk>/", api_views.TodoUpdateAPI.as_view(), name="todo_api_update"),
   #http://127.0.0.1:8000/todo/api/delete/1
+  
+  # apiViews
+  path("api/list/", api_views.TodoListAPI.as_view(), name="todo_api_list"),  
+  path("api/create/", api_views.TodoCreateAPI.as_view(), name="todo_api_create"),  
+  path("api/retrieve/<int:pk>/", api_views.TodoRetrieveAPI.as_view(), name="todo_api_retrieve"),
+  path("api/update/<int:pk>/", api_views.TodoUpdateAPI.as_view(), name="todo_api_update"),
   path("api/delete/<int:pk>/", api_views.TodoDeleteAPI.as_view(), name="todo_api_delete"),
   
+  
+  #   # apiViews
+  # path("generics/list/", api_views.TodoListAPI.as_view(), name="todo_api_list"),  
+  # path("generics/create/", api_views.TodoCreateAPI.as_view(), name="todo_api_create"),  
+  # path("generics/retrieve/<int:pk>/", api_views.TodoRetrieveAPI.as_view(), name="todo_api_retrieve"),
+  # path("generics/update/<int:pk>/", api_views.TodoUpdateAPI.as_view(), name="todo_api_update"),
+  # path("generics/delete/<int:pk>/", api_views.TodoDeleteAPI.as_view(), name="todo_api_delete"),
+  
 
+  
+  #GenericAPIView
+  path("generics/list/", TodoGenericsListAPI.as_view(), name="todo_generics_list"),
+  path("generics/create/", TodoGenericsCreateAPI.as_view(), name="todo_generics_create"),
+  path("generics/retrieve/<int:pk>/", TodoGenericsRetrieveAPI.as_view(), name="todo_generics_retrieve"),
+  path("generics/update/<int:pk>/", TodoGenericsUpdateAPI.as_view(), name="todo_generics_update"),
+  path("generics/delete/<int:pk>/", TodoGenericsDeleteAPI.as_view(), name="todo_generics_delete"),
+  path("generics/delete/<int:pk>/", TodoGenericsListCreateAPI.as_view(), name="todo_generics_delete"),
+  path("generics/delete/<int:pk>/", TodoGenericsRetrieveUpdateDeleteAPI.as_view(), name="todo_generics_delete"),
+  
   
 ]
 

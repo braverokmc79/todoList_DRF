@@ -5,6 +5,19 @@ from rest_framework.response import Response
 from rest_framework import status
 from django.http import *
 
+"""
+✅ 1. APIView (rest_framework.views.APIView)
+
+📌 특징:
+DRF에서 가장 기본이 되는 클래스 기반 뷰
+Django의 View를 확장하여 request.data, Response, status 같은 DRF 기능을 제공
+get(), post(), put() 등을 직접 구현해야 함
+매우 유연함 — 복잡하거나 비표준 API에 적합
+
+✅ 복잡한 비즈니스 로직 → APIView 사용
+"""
+
+
 # 전체 Todo 목록 조회
 class TodoListAPI(APIView):
     def get(self, request):          

@@ -130,11 +130,6 @@ function createTodoElement(todo) {
 
 
 
-function datetimeToString(datetime) {
-    if (!datetime) return '';
-    const date = new Date(datetime);
-    return date.toLocaleString(); // "2025.6.19 오후 9:12:34" 등으로 출력
-}
 
 // 3-3-2. 완료 버튼 클릭 시 해당 Todo 항목을 완료 상태로 변경
 //주소 요청이 들어오면 complete을 true로 변경하고, loadTodoList 함수를 실행해라.아니면 완료 실패 메시지를 콘솔로그에 띄워라

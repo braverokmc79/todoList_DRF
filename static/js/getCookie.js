@@ -9,3 +9,4 @@ function getCookie(name) {
   }
   return '';
 }
+

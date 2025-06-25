@@ -93,10 +93,13 @@
         console.error('업데이트 중 오류 발생:', error);
         alert('할 일 수정 중 오류가 발생했습니다.');
       });
-  }
+}
+
+
+
 
 function redirectToDetail(pk)  {
-  window.location.href = `/todo/api/detail/${pk}/`;
+  window.location.href = `/todo/detail/${pk}/`;
 }
 </script>
 

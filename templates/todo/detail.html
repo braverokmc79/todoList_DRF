@@ -11,19 +11,54 @@
     <p><strong>Completed At:</strong> {{todo.completed_at}}</p>
     <p><strong>Experience Points:</strong> {{todo.exp}}</p>
 
-
     <a href ="{% url 'todo:todo_List' %}">목록으로</a>
     
-    <a  href ="{% url 'todo:todo_Update' pk=todo.id %}" class="todoUpdate">수정</a>
+    <button  href ="{% url 'todo:todo_Update' pk=todo.id %}" class="todoUpdate">수정</button>
     <button class="todoDelete" onclick="deleteTodo({{todo.id}})">삭제</button>
 </div>
 
+<script>
+// --- 1. 초기화 ---
+document.addEventListener("DOMContentLoaded", init);
 
-<scrip>
+//2. init
+function init(){
+    // URL에서 pk(기본키) 추출 -> /todo/update/5/ --> 5
+    const pk = getTodoId(); // pk를 가져오는 함수->변수저장
+    loadTodoIntoDetail (pk); // 서버에서 해당 todo 상세정보 불러오기
+    bindUpdateButton(pk); // 수정 버튼 이벤트 등록
+    bindDeleteButton(pk); // 삭제 버튼 이벤트 등록
+}
+//3.URL에서 pk 추출
+function getTodoId() {
+    return window.location.pathname.split('/').filter(Boolean).pop();
+}
 
 
+// --- 4. 서버에서 todo 상세정보를 조회해서 랜더링 함수에 전달...
+function loadTodoIntoDetail(pk) {
+    axxiosInstance
+        .get(`/todo/api/detail/${pk}/`)
+        .then(response => {
+            
+        })
+        .catch(error => {
+            console.error('데이터 로드 중 오류 발생:', error);
+            alert('할 일 데이터를 불러오지 못했습니다.');
+        });
+}
 
-</scrip>
+
+function bindUpdateButton(pk) {
+
+}
+
+function bindDeleteButton(pk) {
+
+}
+
+
+</script>
 
 
 {% endblock %}

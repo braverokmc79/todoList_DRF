@@ -46,12 +46,14 @@ urlpatterns = [
   path("generics/list/", TodoGenericsListAPI.as_view(), name="todo_generics_list"),
   path("generics/create/", TodoGenericsCreateAPI.as_view(), name="todo_generics_create"),
   path("generics/retrieve/<int:pk>/", TodoGenericsRetrieveAPI.as_view(), name="todo_generics_retrieve"),
-  path("generics/update/<int:pk>/", TodoGenericsUpdateAPI.as_view(), name="todo_generics_update"),
+  path("generics/update/<int:pk>/", TodoGenericsUpdateAPI.as_view(), name="todo_generics_update"),  
+    # 단독 삭제
   path("generics/delete/<int:pk>/", TodoGenericsDeleteAPI.as_view(), name="todo_generics_delete"),
-  path("generics/delete/<int:pk>/", TodoGenericsListCreateAPI.as_view(), name="todo_generics_delete"),
-  path("generics/delete/<int:pk>/", TodoGenericsRetrieveUpdateDeleteAPI.as_view(), name="todo_generics_delete"),
-  
-  
+  # List + Create
+  path("generics/list-create/", TodoGenericsListCreateAPI.as_view(), name="todo_generics_list_create"),
+  # Retrieve + Update + Delete (RUD)
+  path("generics/rud/<int:pk>/", TodoGenericsRetrieveUpdateDeleteAPI.as_view(), name="todo_generics_rud"),
+
 ]
 
 

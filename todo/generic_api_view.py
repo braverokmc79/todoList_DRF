@@ -24,36 +24,58 @@ from rest_framework.mixins import RetrieveModelMixin
 ✅단순한 CRUD → GenericAPIView + mixin 또는 ListCreateAPIView 같은 단축형 사용
 """
 
-
 # DRF_GenericAPIView
 
 
 # list
 class TodoGenericsListAPI(generics.ListAPIView):
-    pass
+    queryset = Todo.objects.all()
+    serializer_class = TodoSerializer
+
 
 # create
 class TodoGenericsCreateAPI(generics.CreateAPIView):
-    pass
+    serializer_class = TodoSerializer
 
 
-# retrieve
+# retrieve(상세조회)
 class TodoGenericsRetrieveAPI(generics.RetrieveAPIView):
-    pass
+    queryset = Todo.objects.all()
+    serializer_class=TodoSerializer
+    
 
-# update
+# update(수정)
 class TodoGenericsUpdateAPI(generics.UpdateAPIView):
-    pass
-
+    queryset = Todo.objects.all()
+    serializer_class=TodoSerializer
+    
 # delete
 class TodoGenericsDeleteAPI(generics.DestroyAPIView):
-    pass
+    queryset = Todo.objects.all()
+    serializer_class=TodoSerializer
+    
 
 
 # ListCreate
 class TodoGenericsListCreateAPI(generics.ListCreateAPIView):
-    pass
+    queryset = Todo.objects.all()
+    serializer_class = TodoSerializer
+    
 
+
+
+
+# ✅ RetrieveUpdateDestroyAPIView는 다음 HTTP 메서드 3개를 처리합니다:
+# 메서드	설명	예시 URL
+# GET	상세 조회	/todo/1/
+# PUT	전체 수정	/todo/1/ + JSON 바디
+# DELETE	삭제	/todo/1/
 
 class TodoGenericsRetrieveUpdateDeleteAPI(generics.RetrieveUpdateDestroyAPIView):
-    pass
+    queryset = Todo.objects.all()     # 어디서 데이터를 가져올지
+    serializer_class = TodoSerializer # 데이터를 어떻게 직렬화할지
+    
+    
+    
+    
+    

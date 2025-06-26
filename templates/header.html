@@ -23,13 +23,18 @@
 
 <script>
  document.addEventListener("DOMContentLoaded",()=>{
-        document.getElementById("logoutBtn").addEventListener("click", () => {
-            axiosInstance.get("/todo/api/custom-logout").then(()=>{
-                window.location.href = "{% url 'todo:todo_List' %}";
-            }).catch(err=>{
-                console.error("로그아웃 실패 : ", err);
-                alert("로그아웃 오류가 발생했습니다");
-            });          
-        })
+        const logoutBtn  =document.getElementById("logoutBtn");
+
+        if(logoutBtn){
+            logoutBtn.addEventListener("click", () => {
+                    axiosInstance.get("/todo/api/custom-logout").then(()=>{
+                        window.location.href = "{% url 'todo:todo_List' %}";
+                    }).catch(err=>{
+                        console.error("로그아웃 실패 : ", err);
+                        alert("로그아웃 오류가 발생했습니다");
+                    });          
+            });
+        }
+        
 });
 </script>

@@ -138,4 +138,17 @@ STATICFILES_DIRS = [
     BASE_DIR / "static",
 ]
 
-LOGIN_REDIRECT_URL = "todo:todo_List"
+LOGIN_REDIRECT_URL = "/todo/list/"
+
+
+
+
+REST_FRAMEWORK= {
+    "DEFAULT_PAGINATION_CLASS": "todo.pagination.CustomPageNumberPagination",
+    "PAGE_SIZE":5,    
+}
+
+
+
+
+

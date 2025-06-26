@@ -1,5 +1,7 @@
 from rest_framework.views import APIView
 
+from .pagination import CustomPageNumberPagination
+
 from .serializers import TodoSerializer
 from .models import Todo
 from rest_framework.response import Response
@@ -21,10 +23,15 @@ get(), post(), put() 등을 직접 구현해야 함
 
 # 전체 Todo 목록 조회
 class TodoListAPI(APIView):
-    def get(self, request):          
-        todo = Todo.objects.all().order_by('-created_at') # 모든 Todo 객체를 가져온다              
-        serializer = TodoSerializer(todo, many=True) # 시리얼라이저를 통해 데이터를 JSON 형식으로 변환
-        return Response(serializer.data) # 변환된 데이터 응답
+    def get(self, request):
+        queryset = Todo.objects.all().order_by('-created_at')
+
+        paginator = CustomPageNumberPagination()
+        page = paginator.paginate_queryset(queryset, request)
+        
+        serializer = TodoSerializer(page, many=True)
+        return paginator.get_paginated_response(serializer.data)
+
 
 
 # Todo 생성 (POST 요청)

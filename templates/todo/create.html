@@ -31,6 +31,8 @@
 
 
 <script>
+
+
 // 1. 문서가 완전히 로드되면 초기화 실행 
 document.addEventListener('DOMContentLoaded', init);
 
@@ -82,7 +84,7 @@ function gatherFormData() {
 //  6. API 호출: Todo 생성 요청
 function createTodo(data) {
   axiosInstance
-    .post('/todo/api/create/', data)
+    .post(`${TODO_API_CREATE_URL}`, data)
     .then(onCreateSuccess) // 7번: 성공 시 처리
     .catch(onCreateError); // 8번: 실패 시 처리
 }

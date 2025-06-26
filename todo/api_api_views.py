@@ -1,4 +1,5 @@
 from rest_framework.views import APIView
+
 from .serializers import TodoSerializer
 from .models import Todo
 from rest_framework.response import Response
@@ -21,7 +22,7 @@ get(), post(), put() 등을 직접 구현해야 함
 # 전체 Todo 목록 조회
 class TodoListAPI(APIView):
     def get(self, request):          
-        todo = Todo.objects.all() # 모든 Todo 객체를 가져온다              
+        todo = Todo.objects.all().order_by('-created_at') # 모든 Todo 객체를 가져온다              
         serializer = TodoSerializer(todo, many=True) # 시리얼라이저를 통해 데이터를 JSON 형식으로 변환
         return Response(serializer.data) # 변환된 데이터 응답
 
@@ -95,3 +96,16 @@ class TodoDeleteAPI(APIView):
         todo.delete()         # 객체 삭제
         # 삭제 성공 시 204 No Content 응답
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+
+#로그인  -> 제공해주는 형식 링크 DRF 제공 링크
+#LogoutAPI -> 서버에 로그아웃 요청
+#장고기본지원 -> 웹
+#axios 방식 ->리액트 뷰, 언리얼엔진 , 유니티
+
+from django.contrib.auth import logout
+class CustomLogoutAPI(APIView):
+    def post(self, request):
+        logout(request)
+        return Response({"message": "로그아웃 완료"}, status=status.HTTP_200_OK)

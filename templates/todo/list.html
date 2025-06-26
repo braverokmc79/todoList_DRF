@@ -63,7 +63,7 @@ function loadTodoList(page) {
 
 // 6. axiosInstance로 서버에서 Todo 목록 가져오기
 async function fetchTodoList(page) {
-    return await axiosInstance.get(`/todo/api/list?page=${page}`).then(res => res.data);
+    return await axiosInstance.get(`${TODO_API_LIST_URL}?page=${page}`).then(res => res.data);
 }
 
 
@@ -134,7 +134,7 @@ function createTodoElement(todo) {
 // 3-3-2. 완료 버튼 클릭 시 해당 Todo 항목을 완료 상태로 변경
 //주소 요청이 들어오면 complete을 true로 변경하고, loadTodoList 함수를 실행해라.아니면 완료 실패 메시지를 콘솔로그에 띄워라
 function toComplete(id) { //매개변수 이름 todo.id 값이 전달됨
-    axiosInstance.patch(`/todo/api/update/${id}/`, { complete: true })
+    axiosInstance.patch(`${TODO_API_UPDATE_URL}${id}/`, { complete: true })
     //todo/api/update/${id}
         .then(() => loadTodoList(1))
         .catch(err => console.error('완료 처리 실패:', err));

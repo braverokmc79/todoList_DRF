@@ -50,7 +50,7 @@
   // --- 4. 기존 todo 데이터를 로드 & 폼 채우기 ---
   function loadTodoIntoForm(pk) {
     axiosInstance
-      .get(`/todo/api/retrieve/${pk}/`) // 엔드포인트 : url 주소 호출
+      .get(`${TODO_API_RETRIEVE_URL}${pk}/`) // 엔드포인트 : url 주소 호출
       .then(response => {
         const todo = response.data;
         // 폼 요소 채우기
@@ -84,7 +84,7 @@
     };
 
     axiosInstance
-      .put(`/todo/api/update/${pk}/`, data)
+      .put(`${TODO_API_UPDATE_URL}${pk}/`, data)
       .then(response => {
         alert('할 일이 성공적으로 수정되었습니다.');
         redirectToDetail(pk);        

@@ -5,9 +5,12 @@
         <a href="{% url 'todo:todo_List' %}">목록</a>
         
         {% if user.is_authenticated %}
-            <button>로그아웃</button>        
+           <form action="{% url 'todo:custom-logout' %}" method="post" style="display: inline;">
+                {% csrf_token %}
+                <button type="submit">로그아웃</button>
+            </form>
         {% else %}
-            <a href="{% url 'rest_framework:login' %}">로그인</a>
+            <a href="{% url 'rest_framework:login' %}?next={% url 'todo:todo_List' %}">로그인</a>
         {% endif %}
 
         

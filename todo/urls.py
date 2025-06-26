@@ -4,11 +4,11 @@ from .api_api_views import *
 from .api_generic_views import *
 from .api_mixin_generics_views import *
 
-
+#ViewSets 설정
 from rest_framework.routers import DefaultRouter
 from .api_viewset_router_views import TodoViewSet
 router = DefaultRouter()
-router.register("view" , TodoViewSet, basename="todo")
+router.register("" , TodoViewSet, basename="todo")
 
 
 

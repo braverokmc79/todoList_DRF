@@ -63,6 +63,8 @@ function loadTodoList(page) {
 
 // 6. axiosInstance로 서버에서 Todo 목록 가져오기
 async function fetchTodoList(page) {
+
+
     return await axiosInstance.get(`${TODO_API_LIST_URL}?page=${page}`).then(res => res.data);
 }
 

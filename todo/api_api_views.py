@@ -105,7 +105,18 @@ class TodoDeleteAPI(APIView):
 #axios 방식 ->리액트 뷰, 언리얼엔진 , 유니티
 
 from django.contrib.auth import logout
+from django.shortcuts import redirect
+from django.urls import reverse
+
 class CustomLogoutAPI(APIView):
-    def post(self, request):
+    """
+    - GET: Django 템플릿용 (redirect)
+    - POST: API 호출용 (axios 등)
+    """
+    def get(self, request):
         logout(request)
-        return Response({"message": "로그아웃 완료"}, status=status.HTTP_200_OK)
+        return redirect(reverse('todo:todo_List'))
+
+    # def post(self, request):
+    #     logout(request)
+    #     return Response({"message": "로그아웃 완료"}, status=status.HTTP_200_OK)

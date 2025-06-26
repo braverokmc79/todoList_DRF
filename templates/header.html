@@ -5,14 +5,31 @@
         <a href="{% url 'todo:todo_List' %}">목록</a>
         
         {% if user.is_authenticated %}
-           <form action="{% url 'todo:custom-logout' %}" method="post" style="display: inline;">
+           
+            {% comment %} 
+            <form action="{% url 'todo:custom-logout' %}" method="post" style="display: inline;">
                 {% csrf_token %}
                 <button type="submit">로그아웃</button>
             </form>
+            {% endcomment %} 
+            
+             <button id="logoutBtn" >로그아웃</button>
         {% else %}
             <a href="{% url 'rest_framework:login' %}?next={% url 'todo:todo_List' %}">로그인</a>
         {% endif %}
 
-        
     </div>
 </div>
+
+<script>
+ document.addEventListener("DOMContentLoaded",()=>{
+        document.getElementById("logoutBtn").addEventListener("click", () => {
+            axiosInstance.get("/todo/api/custom-logout").then(()=>{
+                window.location.href = "{% url 'todo:todo_List' %}";
+            }).catch(err=>{
+                console.error("로그아웃 실패 : ", err);
+                alert("로그아웃 오류가 발생했습니다");
+            });          
+        })
+});
+</script>

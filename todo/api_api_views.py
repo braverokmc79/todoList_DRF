@@ -1,16 +1,14 @@
 from rest_framework.views import APIView
-
 from .pagination import CustomPageNumberPagination
-
 from .serializers import TodoSerializer
 from .models import Todo
 from rest_framework.response import Response
 from rest_framework import status
 from django.http import *
+from rest_framework.parsers import MultiPartParser, FormParser
 
 """
 ✅ 1. APIView (rest_framework.views.APIView)
-
 📌 특징:
 DRF에서 가장 기본이 되는 클래스 기반 뷰
 Django의 View를 확장하여 request.data, Response, status 같은 DRF 기능을 제공
@@ -36,6 +34,9 @@ class TodoListAPI(APIView):
 
 # Todo 생성 (POST 요청)
 class TodoCreateAPI(APIView):
+    parser_classes =[MultiPartParser, FormParser]
+    
+        
     def post(self, request):
         serializer = TodoSerializer(data=request.data) # 클라이언트로부터 전달된 데이터로 시리얼라이저 생성
         serializer.is_valid(raise_exception=True)      # 데이터 유효성 검사 (에러 발생 시 예외 처리)
@@ -65,6 +66,8 @@ class TodoRetrieveAPI(APIView):
 
 # Todo 수정 (전체 수정: PUT / 부분 수정: PATCH)
 class TodoUpdateAPI(APIView):
+    
+    
     # 전체 수정 (PUT)
     def put(self, request, pk):
         try:                        
@@ -106,24 +109,3 @@ class TodoDeleteAPI(APIView):
 
 
 
-#로그인  -> 제공해주는 형식 링크 DRF 제공 링크
-#LogoutAPI -> 서버에 로그아웃 요청
-#장고기본지원 -> 웹
-#axios 방식 ->리액트 뷰, 언리얼엔진 , 유니티
-
-from django.contrib.auth import logout
-from django.shortcuts import redirect
-from django.urls import reverse
-
-class CustomLogoutAPI(APIView):
-    """
-    - GET: Django 템플릿용 (redirect)
-    - POST: API 호출용 (axios 등)
-    """
-    def get(self, request):
-        logout(request)
-        return redirect(reverse('todo:todo_List'))
-
-    # def post(self, request):
-    #     logout(request)
-    #     return Response({"message": "로그아웃 완료"}, status=status.HTTP_200_OK)

@@ -10,11 +10,12 @@ djangorestframework>=3.14
 markdown                # Markdown 지원 (Browsable API용)
 django-filter           # 필터 기능 추가 (추후 사용 가능)
 pygments                # 코드 하이라이팅을 위한 Pygments
+django-environ          # 환경 변수 설정용 패키지 
 
 asgiref==3.8.1
 sqlparse==0.5.3
 gunicorn
-
+Pillow                 # 이미지 업로드 및 처리용 라이브러리
 
 # ORM 및 DB
 # psycopg2-binary  # PostgreSQL

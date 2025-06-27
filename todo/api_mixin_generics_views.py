@@ -3,7 +3,11 @@ from .models import Todo
 from django.http import *
 from rest_framework import generics
 
-#  Mixin Generics
+"""
+✅ 3. Generics Mixin
+
+"""
+
 
 # ListCreate
 class TodoGenericsListCreateAPI(generics.ListCreateAPIView):

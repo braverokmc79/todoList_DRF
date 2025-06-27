@@ -17,9 +17,13 @@
 			<label for="complete">Complete:</label>
 			<input type="checkbox" name="complete" id="complete">
 		</div>
-    <div>
-      <label for="completed_at">Completed At:</label>
+    <div style="display: none;">
+			<label for="completed_at">Completed At:</label>
       <input type="datetime-local" name="completed_at" id="completed_at">
+		</div>
+    <div>
+      <label for="image">Images:</label>
+      <input type="file" name="image" id="image">
 	  </div>
 		<div>
 			<label for="exp">Experience Points:</label>
@@ -31,8 +35,6 @@
 
 
 <script>
-
-
 // 1. 문서가 완전히 로드되면 초기화 실행 
 document.addEventListener('DOMContentLoaded', init);
 
@@ -53,12 +55,66 @@ function bindUIEvents() {
 function onCreateClick() {
   //데이터를 폼으로 부터 수집
   const payload = gatherFormData(); 
+  console.log(" payload  :", payload);
   //서버에 전송
   createTodo(payload); 
 }
 
+//  6. API 호출: Todo 생성 요청
+function createTodo(data) {
+  axiosInstance
+    .post(`${TODO_API_CREATE_URL}`, data)
+    .then(onCreateSuccess) // 7번: 성공 시 처리
+    .catch(onCreateError); // 8번: 실패 시 처리
+}
 
+//  7. 생성 성공 핸들러: 목록 페이지로 이동 
+function onCreateSuccess(response) {
+  // 생성 후 목록 페이지로 이동
+  window.location.href = '/todo/list/';
+}
+
+
+// --- 8. 생성 실패 핸들러: 에러 알림 --------------------------------------
+function onCreateError(error) {
+  console.log("🔥 오류 상세:", error.response?.data || error);
+  console.error('Todo 생성 실패:', error);
+  alert('Todo 생성에 실패했습니다.');
+}
+
+
+function gatherFormData() {
+   let expVal = document.getElementById('exp').value;
+   if (expVal === '') expVal = 0; 
+   //날짜처리
+   const completedAtInput = document.getElementById('completed_at').value;
+   const completedAt = datetimeToString(completedAtInput);
+
+   //이미지 처리
+   const formData =new FormData();
+
+   //텍스트 필드 추가
+   formData.append("name", document.getElementById('name').value);
+   formData.append("description", document.getElementById('description').value);
+   formData.append("complete", document.getElementById('complete').checked);
+   formData.append("completed_at", completedAt);
+   formData.append("exp", Number(expVal));
+   
+   //이미지 파일 추가
+   const imageInput =document.getElementById('image');
+   if(imageInput && imageInput.files.length > 0){  //이미지 파일이 맞는지 이미지 파일 갯수 > 0 클때
+     formData.append('image', imageInput.files[0]); 
+   }
+
+   return formData;
+}
+</script>
+
+
+
+<!--
 // 5. 폼 데이터 수집: 입력값을 객체로 변환 
+{% comment %}
 function gatherFormData() {
   //데이터 평탄화
   let expVal = document.getElementById('exp').value;
@@ -78,30 +134,10 @@ function gatherFormData() {
     completed_at: completedAt,
     exp:Number(expVal),
   };
-}
+}{% endcomment %}
+-->
 
 
-//  6. API 호출: Todo 생성 요청
-function createTodo(data) {
-  axiosInstance
-    .post(`${TODO_API_CREATE_URL}`, data)
-    .then(onCreateSuccess) // 7번: 성공 시 처리
-    .catch(onCreateError); // 8번: 실패 시 처리
-}
-
-//  7. 생성 성공 핸들러: 목록 페이지로 이동 
-function onCreateSuccess(response) {
-  // 생성 후 목록 페이지로 이동
-  window.location.href = '/todo/list/';
-}
-
-
-// --- 8. 생성 실패 핸들러: 에러 알림 --------------------------------------
-function onCreateError(error) {
-  console.error('Todo 생성 실패:', error);
-  alert('Todo 생성에 실패했습니다.');
-}
-</script>
 
 
 {% endblock %}    

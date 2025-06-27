@@ -1,4 +1,6 @@
 from django.urls import path ,include
+
+from .custom_logout import CustomLogoutAPI
 from . import views
 from .api_api_views import *
 from .api_generic_views import *
@@ -17,7 +19,8 @@ app_name = "todo"  # 네임스페이스 지정
 urlpatterns = [
   #path("list/", views.todo_list, name="todo_List"),
   
-  #템플릿 Views
+  
+  #✅템플릿 Views
   #http://127.0.0.1:8000/todo/list/
   #http://127.0.0.1:8000/todo/create/  
   #http://127.0.0.1:8000/todo/detail/1
@@ -28,7 +31,8 @@ urlpatterns = [
   path("update/<int:pk>/", views.TodoUpdateViews.as_view(), name="todo_Update"),
 
  
-  #apiViews
+  
+  #1️⃣apiViews
   #http://127.0.0.1:8000/todo/api/list/
   #http://127.0.0.1:8000/todo/api/create/
   #http://127.0.0.1:8000/todo/retrieve/1/
@@ -42,7 +46,7 @@ urlpatterns = [
   
 
   
-  #GenericAPIView
+  #2️⃣GenericAPIView
   #http://127.0.0.1:8000/todo/generics/list/
   #http://127.0.0.1:8000/todo/generics/create/
   #http://127.0.0.1:8000/todo/generics/retrieve/1/
@@ -56,10 +60,9 @@ urlpatterns = [
   
   
   
+  #3️⃣GenericAPIView + Mixin ===> List + Create # Retrieve + Update + Delete (RUD)
   # 여기서 GET /mix_generics/list/와 POST /mix_generics/create/는 같은 View (ListCreateAPIView)
-  # GET, PUT, DELETE 모두 /generics/<int:pk>/에서 처리 가능 (RetrieveUpdateDestroyAPIView)  
-  # GenericAPIView + Mixin ===> List + Create # Retrieve + Update + Delete (RUD)
-  #http://127.0.0.1:8000/todo/mixin_generics/
+  # GET, PUT, DELETE 모두 /generics/<int:pk>/에서 처리 가능 (RetrieveUpdateDestroyAPIView)    
   #http://127.0.0.1:8000/todo/mixin_generics/
   #http://127.0.0.1:8000/todo/mixin_generics/1/ GET, PUT, DELETE 모두 처리
   path("mixin_generics/", TodoGenericsListCreateAPI.as_view(), name="todo_mixin_generics_list_create"),
@@ -67,13 +70,13 @@ urlpatterns = [
   
   
   
-  #viewSets : CRUD을 한 클래스에 통합
+  #4️⃣viewSets : CRUD을 한 클래스에 통합
   #http://127.0.0.1:8000/todo/viewsets/
   path("viewsets/", include(router.urls)),
 
 
 
-  #logout API
+  #✅logout API
   path("api/custom-logout/", CustomLogoutAPI.as_view(), name="custom-logout"),
 
 

@@ -1,3 +1,4 @@
+from email.mime import image
 from django.db import models
 from django.utils import timezone
 from django.core.exceptions import ValidationError
@@ -15,6 +16,11 @@ class Todo(models.Model):
     completed_at = models.DateTimeField("완료 시각", null=True, blank=True)
     created_at = models.DateTimeField("생성 시각", auto_now_add=True)
     updated_at = models.DateTimeField("수정 시각", auto_now=True)
+
+    # 이미지 필드 추가
+    image =models.ImageField(upload_to='todo_images/', null=True, blank=True)
+    
+    
 
     def clean(self):
         """

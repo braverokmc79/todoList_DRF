@@ -1,4 +1,4 @@
-  const MODE = "api";  // "api", "generics", "mixin_generics", "viewsets"
+  const MODE = "viewsets";  // "api", "generics", "mixin_generics", "viewsets"
 
   // 자동 URL 설정 객체
   const ENDPOINTS = {

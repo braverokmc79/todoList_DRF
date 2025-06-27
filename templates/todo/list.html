@@ -3,11 +3,13 @@
 
 {% block content %}
 
-<div class="todocontainer"></div>
-<div class="pagination"></div>
-
-<button class="todoCreate" id="createBtn">Todo 등록하기</button>
-
+{% if user.is_authenticated %}
+    <div class="todocontainer"></div>
+    <div class="pagination"></div>
+    <button class="todoCreate" id="createBtn">Todo 등록하기</button>
+{% else %}
+    <p>할 일 목록은 로그인 후 확인하실 수 있습니다.</p>
+{% endif %}
 
 
 
@@ -15,6 +17,7 @@
 
 
 <script>
+let currentPage = 1;    
 
 // 1. 문서가 완전히 로드되면 초기화 함수 실행
 document.addEventListener('DOMContentLoaded', init);
@@ -36,42 +39,30 @@ function onCreateClick() {
     window.location.href = '/todo/create/';
 }
 
-// 3. 서버에서 Todo 목록 불러오기
-function getTodoData(page) {
-    fetchTodoData(page)  // 3-1. 서버로부터 데이터 요청
-        .then(data => {
 
-            console.log("전체 응답 데이터", data);
-            console.log("총 개수:", data.count);  // 디버깅용
-
-            const todos = extractTodoArray(data);  // 3-2. 실제 Todo 리스트 추출
-            renderTodoList(todos);  // 3-3. 화면에 Todo 목록 출력
-            renderPagination(data, page); // 3-4. 페이지네이션 표시
-        })
-        .catch(err => console.error('리스트 로드 실패:', err));
-} 
+function fetchTodoData(page){    
+    // 페이지네이션 데이터 요청
+     return  axiosInstance.get(`${TODO_API_LIST_URL}?page=${currentPage}`).then(res => res.data);
+}
 
 
 // 5. 특정 페이지의 Todo 리스트를 불러오고 렌더링
 function loadTodoList(page) {
-    fetchTodoList(page)
+    currentPage = page;
+    fetchTodoData(page)
         .then(data => {
             console.log("전체 응답 데이터", data);              
             console.log("총 개수:", data.count);  // 디버깅용
 
-
             const todos = extractTodoArray(data);  // 실제 Todo 배열 추출         
             renderTodoList(todos);                // 목록 렌더링
             //페이지네이션 추가
-             renderPagination(data, page);
+            renderPagination(data, currentPage);
         })
         .catch(err => console.log("리스트 로드 실패", err));
 }
 
-// 6. axiosInstance로 서버에서 Todo 목록 가져오기
-async function fetchTodoList(page) {
-    return await axiosInstance.get(`${TODO_API_LIST_URL}?page=${page}`).then(res => res.data);
-}
+
 
 
 // 3-2. API 응답 형식에 따라 Todo 배열 추출
@@ -120,6 +111,9 @@ function createTodoElement(todo) {
         <p><strong>Description:</strong> ${todo.description}</p>
         <p><strong>Complete:</strong> ${todo.complete}</p>
         <p><strong>Completed At:</strong> ${datetimeToString(todo.completed_at)}</p>
+         <p><strong>Image:</strong> 
+            ${todo.image ? `<img src="${todo.image}" alt="${todo.name}" width="150"  >` : ''}
+        </p>
         <p><strong>Experience Points:</strong> ${todo.exp}</p>
         <button class="completeBtn">완료</button>
     `;
@@ -142,7 +136,6 @@ function createTodoElement(todo) {
 //주소 요청이 들어오면 complete을 true로 변경하고, loadTodoList 함수를 실행해라.아니면 완료 실패 메시지를 콘솔로그에 띄워라
 function toComplete(id) { //매개변수 이름 todo.id 값이 전달됨
     axiosInstance.patch(`${TODO_API_UPDATE_URL}${id}/`, { complete: true })
-    //todo/api/update/${id}
         .then(() => loadTodoList(1))
         .catch(err => console.error('완료 처리 실패:', err));
 }

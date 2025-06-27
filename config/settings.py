@@ -28,7 +28,7 @@ SECRET_KEY = env('DJANGO_SECRET_KEY')
 
 DEBUG = True
 
-ALLOWED_HOSTS = ["*"]
+
 
 THIRD_PARTY_APPS = [
     'unfold',
@@ -166,10 +166,29 @@ REST_FRAMEWORK= {
 LOGIN_REDIRECT_URL = "/todo/list/"
 LOGIN_URL ="/api-auth/login/"
 
+
+# 미디어 파일 설정 (사용자 업로드 파일)
 MEDIA_URL = "/media/"
 MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 
 
+# 정적 파일 경로 설정 (collectstatic 결과물이 저장됨)
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+
+# Fly.io 배포용 앱 이름 (환경 변수에서 가져옴)
+APP_NAME = os.environ.get("FLY_APP_NAME")
+
+# ALLOWED_HOSTS 설정
+ALLOWED_HOSTS = [f"{APP_NAME}.fly.dev",
+    "todolist-drf-green-shape-2259.fly.dev",  # 실제 앱 도메인
+    "localhost",
+    "127.0.0.1"
+]
 
 
-
+# CSRF 보안 정책상 허용된 도메인 (HTTPS 도메인 필수) "https://test-todo-list.fly.dev"
+CSRF_TRUSTED_ORIGINS = ["https://"+APP_NAME+".fly.dev"] + [
+    origin.strip()
+    for origin in os.environ.get("CSRF_TRUSTED_ORIGINS", "").split(",")
+    if origin.strip()
+]

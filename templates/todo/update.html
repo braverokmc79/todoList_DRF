@@ -20,6 +20,12 @@
       <label for="completed_at">Completed At :    </label>
       <input type="datetime-local" name="completed_at" id="completed_at">
 	  </div>
+
+    <div>
+      <label for="image">Images:</label>
+      <input type="file" name="image" id="image">
+    </div>
+
 		<div>
 			<label for="exp">Experience Points:</label>
 			<input type="number" name="exp" id="exp" min="0">
@@ -57,6 +63,7 @@
         document.querySelector('#name').value = todo.name;
         document.querySelector('#description').value = todo.description;
         document.querySelector('#complete').checked = todo.complete;
+       
 
         if (todo.completed_at) {
           // datetime-local 형식 맞추기

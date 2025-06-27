@@ -231,6 +231,29 @@ python manage.py createsuperuser
 
 ---
 
+
+##### 배포
+```bash
+curl -L https://fly.io/install.sh | sh
+
+```
+
+
+##### Fly 배포용 ALLOWED_HOSTS 설정
+```bash
+APP_NAME = os.environ.get("FLY_APP_NAME")
+ALLOWED_HOSTS = [f"{APP_NAME}.fly.dev", "localhost", "127.0.0.1"]
+```
+
+✅  flyctl 명령어 사용 팁
+```bash
+로그인: flyctl auth login
+새 프로젝트 시작: flyctl launch
+앱 배포: flyctl deploy
+상태 확인: flyctl status
+```
+
+
 ## 👨‍💻 Author
 
 **코담(Codam)**

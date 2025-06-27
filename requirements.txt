@@ -16,7 +16,8 @@ asgiref==3.8.1
 sqlparse==0.5.3
 gunicorn
 Pillow                 # 이미지 업로드 및 처리용 라이브러리
-
+djangorestframework
+djangorestframework-simplejwt
 # ORM 및 DB
 # psycopg2-binary  # PostgreSQL
 # mysqlclient      # MySQL

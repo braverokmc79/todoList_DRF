@@ -4,9 +4,17 @@
 {% block content %}
 
 {% if user.is_authenticated %}
+    {# --- 검색바 추가 --- #}
+    <div  class="search-bar">
+        <input type="search" id="searchInput" placeholder="검색어를 입력하세요."  >
+        <button id="searchBtn" class="btn" >검색</button>
+    </div>
+    {# --- 검색바끝 --- #}
+
     <div class="todocontainer"></div>
     <div class="pagination"></div>
     <button class="todoCreate" id="createBtn">Todo 등록하기</button>
+
 {% else %}
     <p>할 일 목록은 로그인 후 확인하실 수 있습니다.</p>
 {% endif %}
@@ -18,6 +26,7 @@
 
 <script>
 let currentPage = 1;    
+let currentSearch="";
 
 // 1. 문서가 완전히 로드되면 초기화 함수 실행
 document.addEventListener('DOMContentLoaded', init);
@@ -30,9 +39,19 @@ function init() {
 
 // 2-1. UI 이벤트 바인딩: "Todo 등록하기" 버튼 클릭 시 등록 페이지로 이동
 function UIEvents() {
-    document.getElementById('createBtn')
-        .addEventListener('click', onCreateClick);
+    document.getElementById('createBtn').addEventListener('click', onCreateClick);
+
+    // 검색 버튼 이베튼 바인딩
+    document.getElementById("searchBtn").addEventListener("click", onSearchClick);
+
 }
+
+function onSearchClick() {
+   currentSearch=document.getElementById("searchInput").value.trim();
+   loadTodoList(1);
+}
+
+
 
 // 2-1-1. 등록 버튼 클릭 시 /todo/create/로 이동
 function onCreateClick() {
@@ -40,16 +59,29 @@ function onCreateClick() {
 }
 
 
-function fetchTodoData(page){    
+function fetchTodoData(currentPage, currentSearch=""){    
+    console.log(" fetchTodoData currentPage : ", currentPage, " currentSearch : ", currentSearch);
+
     // 페이지네이션 데이터 요청
-     return  axiosInstance.get(`${TODO_API_LIST_URL}?page=${currentPage}`).then(res => res.data);
+    return  axiosInstance.get(`${TODO_API_LIST_URL}`,{
+        params: {
+            page:currentPage,
+            search:currentSearch
+        }
+    })
+    .then(res => {
+            res.data
+            console.log("응답데이터 : ", res.data);
+            return res.data;
+        }
+    );
 }
 
 
 // 5. 특정 페이지의 Todo 리스트를 불러오고 렌더링
 function loadTodoList(page) {
     currentPage = page;
-    fetchTodoData(page)
+    fetchTodoData(currentPage, currentSearch)
         .then(data => {
             console.log("전체 응답 데이터", data);              
             console.log("총 개수:", data.count);  // 디버깅용

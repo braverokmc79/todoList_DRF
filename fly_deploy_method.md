@@ -1,5 +1,8 @@
 # 🚀 Fly.io 위의 Django/형식 Python 프로젝트 배포 전체 정보 (Windows + WSL 기반)
 
+
+
+
 ---
 
 ## ✅ 1. Fly.io CLI (‘flyctl’) 설치 (Windows)
@@ -71,6 +74,17 @@ flyctl launch
 ```
 
 진행 시 나오는 질문와 책임있는 선택지:
+
+
+🟥 기본값으로 이미지 처럼 확인 버튼 클릭
+
+
+![기본값으로확인버트클릭](https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEiK2bkltTooiEA0hAa56AGbLmK7Kgj11aTZuVUI2AOphLcXyseTawGEDqlIHhQ9X2zMWJa4CRFr-yBqepqc2Rv2M5KFNqMG5fr-MToVcHP_wo0_fAu_Y2UXFCUjaUBXTKOylJdr3Mg-4ZHN0CqYqinfNjlxKY8edQsgHudmUtnuvylPH4WZ1dy5XXrM37-f/w258-h640/2025-06-27%2016%2002%2052.png)
+
+
+
+
+### 🟥 상세  CLI 설명
 
 ### 1. “App Name” 입력?
 

@@ -43,6 +43,7 @@ THIRD_PARTY_APPS = [
 
 CUSTOM_APPS = [   
     "todo",
+    "interaction"
 ]
 
 INSTALLED_APPS = THIRD_PARTY_APPS + CUSTOM_APPS

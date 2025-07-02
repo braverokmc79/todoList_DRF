@@ -122,7 +122,34 @@ function renderTodoList(todos) {
     const container = document.querySelector('.todocontainer');
     container.innerHTML = '';
     todos.forEach(todo => container.appendChild(createTodoElement(todo)));
+
+
+    addEventListenersForButtons();
 } 
+
+
+function addEventListenersForButtons() {
+  document.querySelectorAll('.likeBtn').forEach(btn => {
+    btn.removeEventListener('click', likeBtnHandler); // 기존 제거 (선택적)
+    btn.addEventListener('click', likeBtnHandler);
+  });
+
+  document.querySelectorAll('.bookmarkBtn').forEach(btn => {
+    btn.removeEventListener('click', bookmarkBtnHandler);
+    btn.addEventListener('click', bookmarkBtnHandler);
+  });
+}
+
+function likeBtnHandler(e) {
+  e.stopPropagation();
+  toggleLike(e.currentTarget.dataset.id);
+}
+
+function bookmarkBtnHandler(e) {
+  e.stopPropagation();
+  toggleBookmark(e.currentTarget.dataset.bookmarkId);
+}
+
 
 
 // 3-3-1. 단일 Todo 객체를 HTML 요소로 생성

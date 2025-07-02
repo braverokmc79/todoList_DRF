@@ -177,16 +177,21 @@ function createTodoElement(todo) {
             <p><strong>Experience Points:</strong> ${todo.exp}</p>
         </div>
 
-        <div class="todo-actions" style="margin-top: 10px;">
-         
-            <button class="social-btn likeBtn"
-            data-id="${todo.id}"><span class="icon">${todo.is_liked ? '💔' : '❤️'}</span> 
-            <span class="count">${todo.like_count}</span>
-            </button>
+        <div class="todo-actions" style="margin-top: 10px;display: flex;justify-content: space-between; ">
+            <div>
+                <button class="social-btn likeBtn"
+                data-id="${todo.id}"><span class="icon">${todo.is_liked ? '💔' : '❤️'}</span> 
+                <span class="count">${todo.like_count}</span>
+                </button>
 
-            <button class="bookmarkBtn action-button" data-bookmark-id="${todo.id}">🔖 ${todo.bookmark_count || todo.bookmark_count}</button>
-            <button class="commentToggleBtn action-button" data-id="${todo.id}">💬 <span class="count">${todo.comments_count || 0}</span></button>
-            <button class="detail-link action-button" data-id="${todo.id}">MY댓글</button>
+                <button class="bookmarkBtn action-button" data-bookmark-id="${todo.id}">🔖 ${todo.bookmark_count || todo.bookmark_count}</button>
+                <button class="commentToggleBtn action-button" data-id="${todo.id}">💬 <span class="count">${todo.comments_count || 0}</span></button>
+                <button class="detail-link action-button" data-id="${todo.id}">MY댓글</button>
+            </div>
+
+            <div>
+                 <button class="completeBtn">완료</button>
+            </div>
         </div>
 
         <div class="commentBox" style="display:none; padding: 10px;">
@@ -197,7 +202,7 @@ function createTodoElement(todo) {
             </div>
         </div>
 
-        <button class="completeBtn">완료</button>
+       
     `;
 
     div.querySelector('.todo-content').addEventListener('click', () => detailView(todo.id));

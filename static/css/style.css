@@ -420,7 +420,7 @@ button:hover {
 }
 
 .completeBtn {
-    position: absolute;
+    /* position: absolute; */
     bottom: 10px;
     right: 10px;
     background-color: #007bff;

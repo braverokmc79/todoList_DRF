@@ -48,6 +48,9 @@ function renderTodoDetail(todo) {
             <p><strong>Description:</strong> ${todo.description}</p>
             <p><strong>Complete:</strong> ${todo.complete ? "Yes" : "No"}</p>
             <p><strong>Completed At:</strong> ${formattedDate}</p>
+              <p><strong>Image:</strong> 
+                ${todo.image ? `<img src="${todo.image}" alt="${todo.name}" width="150">` : ''}
+            </p>
             <p><strong>Experience Points:</strong> ${todo.exp}</p>
       </div>
 

@@ -1,0 +1,2 @@
+=========================»ý¼º ================
+[{"model": "auth.user", "pk": 1, "fields": {"password": "pbkdf2_sha256$1000000$wVPlVMP2Jz85pf3Gry3lWH$TKoNq+lvh/p8Og2ZCpa8l/Tj4bGYlgpC+HxmJGzWnsU=", "last_login": null, "is_superuser": true, "username": "admin", "first_name": "", "last_name": "", "email": "admin@gmail.com", "is_staff": true, "is_active": true, "date_joined": "2025-07-02T06:17:57.433Z", "groups": [], "user_permissions": []}}]

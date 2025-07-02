@@ -1,73 +1,66 @@
 from django.db import models
-from django.contrib.auth.models import User
 from todo.models import Todo
+from django.contrib.auth.models import User
 
-
-# 👍 좋아요 모델
+# 좋아요 모델
 class Like(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    todo = models.ForeignKey(Todo, on_delete=models.CASCADE)
-
+    user = models.ForeignKey(User, on_delete=models.CASCADE) 
+    todo = models.ForeignKey(Todo, on_delete=models.CASCADE) 
+    
     is_like = models.BooleanField(default=True)
-    
-    class Meta:
-        constraints = [
-            models.UniqueConstraint(fields=['user', 'todo'], name='unique_user_todo_like')
-        ]
 
-    def __str__(self):
-        return f"{self.user.username} ❤️ {self.todo.name}"
+    class Meta: # 중복 방지
+        unique_together = ("user", "todo")
+        # todo, user속성은 중복 데이터를 아예 저장하지 못하게 막아주는 제약조건
 
+    def __str__(self): # 관리자 페이지
+        return f"{self.user.username} ❤️ {self.todo.name}"   
+        # admin ❤️ 공부하기 
 
-# ⭐ 북마크 모델
+# 북마크 모델
 class Bookmark(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    todo = models.ForeignKey(Todo, on_delete=models.CASCADE)
-
+    user = models.ForeignKey(User, on_delete=models.CASCADE) 
+    todo = models.ForeignKey(Todo, on_delete=models.CASCADE) 
     is_marked = models.BooleanField(default=True)
-    
-    
-    class Meta:
-        constraints = [
-            models.UniqueConstraint(fields=['user', 'todo'], name='unique_user_todo_bookmark')
-        ]
+
+    class Meta: # 중복 방지
+        unique_together = ("user", "todo")
+        # todo, user속성은 중복 데이터를 아예 저장하지 못하게 막아주는 제약조건
 
     def __str__(self):
-        return f"{self.user.username} 📌 {self.todo.name}"
+        return f"{self.user.username} ❤️ {self.todo.name}"   
+        # admin ❤️ 공부하기 
 
-
-# 💬 댓글 모델
+# 댓글 모델
 class Comment(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    todo = models.ForeignKey(Todo, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE) 
+    todo = models.ForeignKey(Todo, on_delete=models.CASCADE) 
     content = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
-
-    # 댓글 좋아요: 중간 테이블로 연결 ,  related_name='liked_comments':  역참조 시 사용할 이름을 지정
-    likes = models.ManyToManyField(User, through='CommentLike', related_name='liked_comments', blank=True)
+    # 댓글을 좋아요를 누른 유저들을 저장하는 필드
+    likes = models.ManyToManyField(User, through="CommentLike", related_name="liked_comments", blank=True)
 
     def __str__(self):
-        return f"{self.user.username} 💬 {self.content[:20]}"
+        return f"{self.user.username} ❤️ {self.content[:20]}"   
+        # admin ❤️ 공부하기 
 
-"""
-✅ 2. through='CommentLike'
-Django가 자동으로 M2M 중간 테이블을 생성하는 대신,
-CommentLike라는 사용자 정의 중간 테이블을 사용하겠다는 의미입니다.
-이 중간 테이블에 liked_at 같은 추가 필드를 넣을 수 있습니다.
-"""
-
-
-
-# ❤️ 댓글 좋아요 모델
+# 누가 어떤 댓글을 언제 좋아요를 눌렀는지 기록
 class CommentLike(models.Model):
     comment = models.ForeignKey(Comment, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     liked_at = models.DateTimeField(auto_now_add=True)
+    # 사용자가 댓글에 좋아요를 누른 시간을 자동으로 저장하기 위한 필드
 
-    class Meta:
-        constraints = [
-            models.UniqueConstraint(fields=['user', 'comment'], name='unique_user_comment_like')
-        ]
+    is_like = models.BooleanField(default=True)
+    # 현재 좋아요가 유효한지 여부의 bool값
+
+    class Meta: # 중복 방지
+        unique_together = ("user", "comment") 
 
     def __str__(self):
-        return f"{self.user.username} 👍 댓글 ID: {self.comment.id}"
+        return f"{self.user.username} ❤️ {self.comment.id}" 
+
+# 모델의 역할
+# 비즈니스 로직을 처리한다.
+# 데이터 저장, 검증 처리
+# 어떤 값이 나와야 하는지 처리

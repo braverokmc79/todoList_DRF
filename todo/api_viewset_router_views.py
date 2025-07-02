@@ -7,7 +7,7 @@ from .serializers import TodoSerializer
 from rest_framework.authentication import SessionAuthentication
 from rest_framework.permissions import IsAuthenticated
 from rest_framework import filters
-from rest_framework.parsers import MultiPartParser, FormParser
+from rest_framework.parsers import JSONParser, MultiPartParser, FormParser
 
 
 """
@@ -31,7 +31,7 @@ class TodoViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated]
     
     #이미지
-    parser_classes = [MultiPartParser, FormParser]
+    parser_classes = [JSONParser,MultiPartParser, FormParser]
     
     
     # 검색기능

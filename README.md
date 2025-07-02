@@ -12,30 +12,88 @@
 
 ---
 
+![이미지](https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEiam-3oMKCofzrcmRmwjoEU8BAbaUdI-6je0JvicSwlU42sOr8XCaS70PItkK4tIi29M1z_g35pqELO8HWZXzs9oiZ3wrzO4kw-VvFKs5GRGdj40449nEEUDp3EipUOHzFf9FGLYu2OXWukAeRlLon5pQtQz_5uBq0zxg4KDcuqiBMOjaqRzmOgTnFHQMeI/s2296/2025-07-02%2013%2015%2022.png)
+
+![이미지](https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEi1V8dmCiyLBHyLZ4bcW03Ubrlgu-ZyPBZFkxfc9K3fBWK6EEQyRZDWknjzXP3lIncIrBQFbEXb1jy2HkPqHjOICBNiO_GFYCvDgVqmbqCV8Nj6J-gZ43WK8wDi0uGoxBIbSlCC9W0bF0ykZb90PXHigKjNd9KNpPletaFTls19iGgs5ttat5LN61jszUhe/s1371/2025-07-02%2013%2016%2044.png)
+
+
+![이미지](https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEi12vpt9j686hALWqKRkVYB_FIp93UJcb1U3aubWNOI996SJMRSPkRkZCJZwutwwTG5Xkb_tgcJ5FZZBjPDNYKour3vNgfnVprW_QzqEjffN8mSCUhUun0oiPUIIdCxd7SqJ5Q9JN_3R4902SA_KLggWdzKNdxqoB6I394ot4Nc1AzdZtdQ3H5bXgyqBc5C/s1858/2025-07-02%2013%2016%2024.png)
+
 
 ## 🔖프로젝트 구조
 ```bash
+
 todoList_DRF/
-├── config/                 # 프로젝트 설정 디렉토리
-├── templates/              # HTML 템플릿 디렉토리
-├── todo/                   # 앱 디렉토리
-│   ├── __pycache__/        # 파이썬 캐시 파일
-│   ├── migrations/         # 마이그레이션 파일
-│   ├── __init__.py         # 패키지 초기화 파일
-│   ├── admin.py            # 관리자(admin) 설정
-│   ├── apps.py             # 앱 설정 파일
-│   ├── models.py           # 모델 정의
-│   ├── serializers.py      # DRF용 Serializer 정의
-│   ├── tests.py            # 테스트 코드
-│   ├── urls.py             # URL 라우팅 설정
-│   ├── views.py            # 뷰(View) 정의
-├── .gitignore              # Git 무시 파일 목록
-├── db.sqlite3              # SQLite 데이터베이스 파일
-├── manage.py               # Django 프로젝트 관리 명령어 실행 파일
-└── README.md               # 프로젝트 설명 문서
+├── .github/
+├── config/                      # 프로젝트 설정 (settings, urls 등)
+│   ├── __init__.py
+│   ├── asgi.py
+│   ├── settings.py
+│   ├── urls.py
+│   └── wsgi.py
+│
+├── interaction/                # 앱 1: interaction
+│   ├── migrations/
+│   ├── __init__.py
+│   ├── admin.py
+│   ├── api_views.py
+│   ├── apps.py
+│   ├── models.py
+│   ├── serializers.py
+│   ├── tests.py
+│   ├── urls.py
+│   └── views.py
+│
+├── todo/                       # 앱 2: todo (기능별로 파일 분리)
+│   ├── migrations/
+│   ├── __init__.py
+│   ├── admin.py
+│   ├── api_api_views.py
+│   ├── api_generic_views.py
+│   ├── api_mixin_generics_views.py
+│   ├── api_viewset_router_views.py
+│   ├── apps.py
+│   ├── custom_logout.py
+│   ├── models.py
+│   ├── pagination.py
+│   ├── serializers.py
+│   ├── tests.py
+│   ├── urls.py
+│   └── views.py
+│
+├── media/                      # 업로드 파일 저장 경로
+├── static/                     # 정적 파일(css, js 등)
+├── templates/                  # 템플릿 디렉토리
+│   ├── interaction/
+│   ├── registration/
+│   ├── todo/
+│   ├── base.html
+│   ├── footer.html
+│   ├── head.html
+│   ├── header.html
+│   └── index.html
+│
+├── .dockerignore
+├── .env                        # 환경 변수
+├── .gitignore
+├── db.sqlite3                  # SQLite DB (로컬용)
+├── Django(todoList) 7 배포.md  # 배포 관련 문서
+├── Dockerfile                  # 도커 설정
+├── fly_deploy_method.md        # Fly.io 배포 가이드
+├── fly.toml                    # Fly.io 설정 파일
+├── manage.py
+├── README.md
+└── requirements.txt            # 의존성 목록
 
 ```
 
+### 🧩 interaction 앱의 주요 기능
+
+좋아요 (Like): 사용자가 특정 todo 또는 콘텐츠에 좋아요를 누를 수 있음
+
+북마크 (Bookmark): 관심 있는 todo를 북마크하여 나중에 쉽게 확인 가능
+
+댓글 (Comment): 사용자 간 커뮤니케이션 또는 메모용 댓글 기능 제공
 
 
 

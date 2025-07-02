@@ -1,25 +1,24 @@
-from django.urls import path ,include
-
-from python.bookproject.books.models import Book
-from .api_viewset_router_views import LikeViewSet , BookmarkViewSet , CommentViewSet
-
-#ViewSets 설정
+from django.urls import path, include
 from rest_framework.routers import DefaultRouter
+from .api_views import CommentLikeViewSet, LikeViewSet, BookmarkViewSet, CommentViewSet
+from . import views  # ← 새로 작성할 views.py 참조
+
 router = DefaultRouter()
-router.register("" , LikeViewSet, basename="like")
-router.register("" , BookmarkViewSet, basename="bookmarks")
-router.register("" , CommentViewSet, basename="comments")
+router.register(r"likes", LikeViewSet, basename="likes")
+router.register(r"bookmarks", BookmarkViewSet, basename="bookmarks")
+router.register(r"comments", CommentViewSet, basename="comments")
+router.register(r"commentlikes", CommentLikeViewSet, basename="commentlikes")
 
 
-app_name="interaction"
+# r은 주소의 마지막을 표시한 것이며 규칙이 아닌 관습이다.
+
+app_name = "interaction"
 
 
 urlpatterns = [
-  path("viewsets/", include(router.urls)),     
-]    
 
-
-
- 
-
-
+    path("api/interaction/", include(router.urls)),     
+    
+   # ✅ 이 부분 추가
+    path("interaction/todo/detail/<int:pk>/", views.todo_detail_with_interaction, name="todo_interaction_detail"),
+]

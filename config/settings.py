@@ -50,14 +50,6 @@ INSTALLED_APPS = THIRD_PARTY_APPS + CUSTOM_APPS
 
 
 
-# Application definition
-REST_FRAMEWORK = {
-    'DEFAULT_RENDERER_CLASSES': [
-       'rest_framework.renderers.JSONRenderer',
-       'rest_framework.renderers.BrowsableAPIRenderer',  # <- 이게 있어야 UI 보임
-    ]
-}
-
 
 
 MIDDLEWARE = [
@@ -145,23 +137,26 @@ STATICFILES_DIRS = [
 ]
 
 
-REST_FRAMEWORK= {
-    # 페이지네이션 클래스 : 커스텀 지정
+
+REST_FRAMEWORK = {
+    "DEFAULT_RENDERER_CLASSES": [
+        "rest_framework.renderers.JSONRenderer",
+        "rest_framework.renderers.BrowsableAPIRenderer",
+    ],
+     #권한 클래스 :인증된 사용자만 접근 가능하도록 설정
     "DEFAULT_PAGINATION_CLASS": "todo.pagination.CustomPageNumberPagination",
-    "PAGE_SIZE":3,    
-    
-    #권한 클래스 :인증된 사용자만 접근 가능하도록 설정
+    "PAGE_SIZE": 3,
     "DEFAULT_PERMISSION_CLASSES": [
         "rest_framework.permissions.IsAuthenticated",
     ],
-    
-    #인증 클래스 :사용자의 로그인 여부를 판단하는 방법 지정
+     #인증 클래스 :사용자의 로그인 여부를 판단하는 방법 지정
     # Jwt 토큰 기반 인증
     "DEFAULT_AUTHENTICATION_CLASSES": [
-        "rest_framework_simplejwt.authentication.JWTAuthentication",
-    ]
-    
+        "rest_framework_simplejwt.authentication.JWTAuthentication",  # JWT
+         "rest_framework.authentication.SessionAuthentication",         # 세션
+    ],
 }
+
 
 
 LOGIN_REDIRECT_URL = "/todo/list/"
@@ -180,11 +175,12 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 APP_NAME = os.environ.get("FLY_APP_NAME")
 
 # ALLOWED_HOSTS 설정
-ALLOWED_HOSTS = [f"{APP_NAME}.fly.dev",
-    "todolist-drf-green-shape-2259.fly.dev",  # 실제 앱 도메인
-    "localhost",
-    "127.0.0.1"
-]
+# ALLOWED_HOSTS = [f"{APP_NAME}.fly.dev",
+#     "todolist-drf-green-shape-2259.fly.dev",  # 실제 앱 도메인
+#     "localhost",
+#     "127.0.0.1"
+# ]
+ALLOWED_HOSTS = ["*"]
 
 
 # CSRF 보안 정책상 허용된 도메인 (HTTPS 도메인 필수) "https://test-todo-list.fly.dev"

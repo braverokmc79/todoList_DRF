@@ -235,6 +235,18 @@ function postComment(todoId, content, listElement) {
   axiosInstance.post("/api/interaction/comments/", { todo_pk: todoId, content: content })
     .then(() => {
       loadComments(todoId, listElement);
+
+      //댓글 등록 후 count 증가
+      const  todoElement = document.querySelector(`.todo-item`);
+      const countSpan =todoElement?.querySelector('.commentToggleBtn .count');
+
+      if (countSpan) {
+        const currentCount = parseInt(countSpan.textContent || '0', 10);
+        countSpan.textContent = currentCount + 1;
+      }
+
+
+
     })
     .catch(error => {
       console.error("댓글 등록 실패:", error.response?.data || error);
@@ -362,6 +374,24 @@ function toggleBookmark(id) {
         })
         .catch(err => console.error(' 북마크 토글 실패:', err));
 }
+
+
+// ✅ 이벤트 위임 방식 추가 (비동기 렌더링 문제 해결)
+document.addEventListener('click', function(e) {
+    const likeBtn = e.target.closest('.likeBtn');
+    if (likeBtn) {
+        e.stopPropagation();
+        toggleLike(likeBtn.dataset.id);
+        return;
+    }
+
+    const bookmarkBtn = e.target.closest('.bookmarkBtn');
+    if (bookmarkBtn) {
+        e.stopPropagation();
+        toggleBookmark(bookmarkBtn.dataset.bookmarkId);
+        return;
+    }
+});
 </script>
 
 

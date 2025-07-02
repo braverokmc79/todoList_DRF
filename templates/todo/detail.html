@@ -4,33 +4,27 @@
 
 <div class="todoDetail"></div>
 
-
 <script>
 // --- 1. 초기화 ---
 document.addEventListener("DOMContentLoaded", init);
 
-//2. init
+// 🔧 초기 실행 함수: URL에서 PK 추출 후 상세 정보 불러오기
 function init(){
-    // URL에서 pk(기본키) 추출 -> /todo/update/5/ --> 5
-   
-    const pk = getTodoId(); // pk를 가져오는 함수->변수저장
-    loadTodoIntoDetail (pk); // 서버에서 해당 todo 상세정보 불러오기
-  
+    const pk = getTodoId();
+    loadTodoIntoDetail(pk);
 }
-//3.URL에서 pk 추출
+
+// 🔍 현재 URL에서 todo ID(PK) 추출
 function getTodoId() {
     return window.location.pathname.split('/').filter(Boolean).pop();
 }
 
-
-// --- 4. 서버에서 todo 상세정보를 조회해서 랜더링 함수에 전달...
+// 📦 서버에서 특정 Todo 상세 정보 로드
 function loadTodoIntoDetail(pk) {
-    console.log(pk);
     axiosInstance
         .get(`${TODO_API_RETRIEVE_URL}${pk}/`)
         .then(response => {
-            console.log(response.data);
-             renderTodoDetail(response.data) 
+            renderTodoDetail(response.data);
         })
         .catch(error => {
             console.error('데이터 로드 중 오류 발생:', error);
@@ -38,91 +32,161 @@ function loadTodoIntoDetail(pk) {
         });
 }
 
-
-// --- 5. 받아온 todo 데이터를 화면에 랜더링(출력) ---
+// 🖼️ 상세 정보를 HTML로 렌더링
 function renderTodoDetail(todo) {
   const container = document.querySelector(".todoDetail");
-
-  // 날짜 변환 함수 사용 (필요 시 정의)
   const formattedDate = todo.completed_at ? datetimeToString(todo.completed_at) : "N/A";
+
+
+   console.log(" todo  상태 : ", todo);
+
 
   container.innerHTML = `
     <div class="todo-item">
-      <p><strong>Name:</strong> ${todo.name}</p>
-      <p><strong>Description:</strong> ${todo.description}</p>
-      <p><strong>Complete:</strong> ${todo.complete ? "Yes" : "No"}</p>
-      <p><strong>Completed At:</strong> ${formattedDate}</p>
-      <p><strong>Experience Points:</strong> ${todo.exp}</p>
-        <button class="completeBtn">완료</button>
-        <button class="todoList"">목록으로</button>        
-        <button  class="todoUpdate">수정</button>
-        <button class="todoDelete" onclick="deleteTodo({{todo.id}})">삭제</button>
+      <div class="todo-content ${todo?.complete ? "todo-item  completed" :""}">  
+            <p><strong>Name:</strong> ${todo.name}</p>
+            <p><strong>Description:</strong> ${todo.description}</p>
+            <p><strong>Complete:</strong> ${todo.complete ? "Yes" : "No"}</p>
+            <p><strong>Completed At:</strong> ${formattedDate}</p>
+            <p><strong>Experience Points:</strong> ${todo.exp}</p>
+      </div>
+
+    <div class="todo-content-footer">
+       <div class="todo-content-footer-sub" >
+            <div class="todo-actions">
+                <button class="social-btn likeBtn btn" data-id="${todo.id}">
+                <span class="icon">${todo.is_liked ? '💔' : '❤️'}</span> 
+                <span class="count">${todo.like_count}</span>
+                </button>
+
+                <button class="bookmarkBtn btn" data-bookmark-id="${todo.id}">
+                🔖 <span class="count">${todo.bookmark_count || 0}</span>
+                </button>
+
+                <button class="commentToggleBtn btn" data-id="${todo.id}">
+                💬 <span class="count">${todo.comments_count || 0}</span>
+                </button>
+            </div>
+
+            <div>                
+                <button class="todoList btn-action">목록으로</button>        
+                <button class="todoUpdate btn-action">수정</button>
+                <button class="todoDelete btn-action">삭제</button>
+                <button class="completeBtn btn-action">완료</button>
+            </div>
+
+        </div>    
+
+        <div class="commentBox" style="display:none; padding: 10px;">
+            <ul class="commentList"></ul>
+            <div style="margin-top: 5px; display: flex; gap: 5px;">
+            <input type="text" class="commentInput" placeholder="댓글을 입력하세요" style="flex: 1; padding: 4px;">
+            <button class="commentSubmit">등록</button>
+            </div>
+        </div>
+
+
+
+
+      </div>
+
+
     </div>
   `;
 
-    bindListButton();
-    bindCompleteButton(todo.id); // 완료
-    bindUpdateButton(todo.id); // 수정
-    bindDeleteButton(todo.id); // 삭제
+  bindListButton();
+  bindCompleteButton(todo.id);
+  bindUpdateButton(todo.id);
+  bindDeleteButton(todo.id);
+  bindDetailEventListeners(todo.id); // 좋아요/북마크/댓글 바인딩
 }
 
-function bindListButton() {   
-    const btn =document.querySelector('.todoList');
-    if(!btn) return;    
-    btn.addEventListener('click', () => {
-        window.location.href = `/todo/list/`;
-    });
+// ✅  좋아요, 북마크, 댓글 토글 버튼 이벤트 바인딩
+function bindDetailEventListeners(todoId) {
+  document.querySelector('.likeBtn')?.addEventListener('click', e => {
+    e.stopPropagation();
+    toggleLike(todoId);
+  });
+
+  document.querySelector('.bookmarkBtn')?.addEventListener('click', e => {
+    e.stopPropagation();
+    toggleBookmark(todoId);
+  });
+
+  document.querySelector('.commentToggleBtn')?.addEventListener('click', e => {
+    e.stopPropagation();
+    const box = document.querySelector('.commentBox');
+    box.style.display = (box.style.display === 'none') ? 'block' : 'none';
+    loadComments(todoId, box.querySelector('.commentList'));
+  });
+
+  document.querySelector('.commentSubmit')?.addEventListener('click', e => {
+    e.stopPropagation();
+    const input = document.querySelector('.commentInput');
+    const content = input.value;
+    if (content.trim()) {
+      postComment(todoId, content, document.querySelector('.commentList'));
+      input.value = '';
+    }
+  });
+
+  document.querySelector('.commentInput')?.addEventListener('click', e => e.stopPropagation());
 }
 
-
-//업데이트 처리
-function bindUpdateButton(pk) {   
-    const btn =document.querySelector('.todoUpdate');
-    if(!btn) return;    
-    btn.addEventListener('click', () => {    
-        window.location.href = `/todo/update/${pk}/`;
-    });
+// ✅  목록으로 돌아가기 버튼
+function bindListButton() {
+  const btn = document.querySelector('.todoList');
+  if (!btn) return;
+  btn.addEventListener('click', () => {
+    window.location.href = `/todo/list/`;
+  });
 }
 
+// ✅  수정 페이지로 이동 버튼
+function bindUpdateButton(pk) {
+  const btn = document.querySelector('.todoUpdate');
+  if (!btn) return;
+  btn.addEventListener('click', () => {
+    window.location.href = `/todo/update/${pk}/`;
+  });
+}
 
-//삭제 처리
+// ✅  삭제 처리 버튼
 function bindDeleteButton(pk) {
-    const btn =document.querySelector('.todoDelete');
-    if(!btn) return; 
-    btn.addEventListener('click', () => {
-        if(confirm("정말 삭제 하시겠습니까?")) {        
-            axiosInstance.delete(`${TODO_API_DELETE_URL}${pk}/`)
-            .then(response => {
-                alert('할 일이 성공적으로 삭제되었습니다.');            
-                window.location.href = `/todo/list/`;
-            })
-            .catch(error => {
-                console.error('데이터 로드 중 오류 발생:', error);
-                alert('할 일 삭제 중 오류가 발생했습니다.');
-            });
-        }
-    });
-   
+  const btn = document.querySelector('.todoDelete');
+  if (!btn) return;
+  btn.addEventListener('click', () => {
+    if (confirm("정말 삭제 하시겠습니까?")) {
+      axiosInstance.delete(`${TODO_API_DELETE_URL}${pk}/`)
+        .then(() => {
+          alert('할 일이 성공적으로 삭제되었습니다.');
+          window.location.href = `/todo/list/`;
+        })
+        .catch(error => {
+          console.error('데이터 삭제 중 오류 발생:', error);
+          alert('할 일 삭제 중 오류가 발생했습니다.');
+        });
+    }
+  });
 }
 
-//완료처리
+// ✅ 완료 상태로 변경 처리 버튼
 function bindCompleteButton(pk) {
-    const btn =document.querySelector('.completeBtn');
-    if(!btn) return; 
-
-    btn.addEventListener('click', () => {
-        axiosInstance.patch(`${TODO_API_UPDATE_URL}${pk}/`, { complete: true })
-        .then(
-            response => {
-                alert('할 일이 성공적으로 완료되었습니다.');            
-                window.location.reload();
-            }    
-        )
-        .catch(err => console.error('완료 처리 실패:', err));
-    });   
-    
+  const btn = document.querySelector('.completeBtn');
+  if (!btn) return;
+  btn.addEventListener('click', () => {
+    axiosInstance.patch(`${TODO_API_UPDATE_URL}${pk}/`, { complete: true })
+      .then(() => {
+        alert('할 일이 성공적으로 완료되었습니다.');
+        window.location.reload();
+      })
+      .catch(err => console.error('완료 처리 실패:', err));
+  });
 }
 </script>
+
+
+<script src="{% static 'js/todoCommon.js' %}"></script>
 
 
 {% endblock %}

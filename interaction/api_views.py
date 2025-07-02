@@ -63,15 +63,26 @@ class CommentLikeViewSet(viewsets.ModelViewSet):
     serializer_class = CommentLikeSerializer
     permission_classes = [permissions.IsAuthenticated]
 
-
     @action(detail=True, methods=['post'])  # /commentlikes/{pk}/toggle/
     def toggle(self, request, pk=None):
         comment = get_object_or_404(Comment, pk=pk)
         user = request.user
-        like, created = CommentLike.objects.get_or_create(comment=comment, user=user)
-        like.is_like = not like.is_like
-        like.save()
+
+        like = CommentLike.objects.filter(comment=comment, user=user).first()
+
+        if like:
+            like.delete()
+            is_liked = False
+        else:
+            CommentLike.objects.create(comment=comment, user=user, is_like=True)
+            is_liked = True
+
+        like_count = CommentLike.objects.filter(comment=comment, is_like=True).count()
+
         return Response({
-            "is_liked": like.is_like,
-            "like_count": CommentLike.objects.filter(comment=comment, is_like=True).count()
+            "is_liked": is_liked,
+            "like_count": like_count
         })
+
+
+        

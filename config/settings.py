@@ -11,7 +11,6 @@ from pathlib import Path
 import os
 import environ
 
-
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -30,8 +29,8 @@ DEBUG = True
 
 
 
-THIRD_PARTY_APPS = [
-    'unfold',
+THIRD_PARTY_APPS = [    
+    #'unfold',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -100,7 +99,7 @@ DATABASES = {
         'USER': os.getenv("DB_USER"),
         'PASSWORD': os.getenv("DB_PASSWORD"),
         'HOST': os.getenv("DB_HOST"),
-        'PORT': os.getenv("DB_PORT", '5432'),
+        'PORT': os.getenv("DB_PORT", '35432'),
     }
 }
 

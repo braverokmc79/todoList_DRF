@@ -81,26 +81,43 @@
   }
 
   // --- 5. 수정 요청 보내기 ---
-  function updateTodo(pk) {
-    const data = {
-      name: document.querySelector('#name').value,
-      description: document.querySelector('#description').value,
-      complete: document.querySelector('#complete').checked,
-      completed_at: document.querySelector('#completed_at').value || null,
-      exp: parseInt(document.querySelector('#exp').value, 10) || 0,
-    };
+function updateTodo(pk) {
+  const formData = new FormData();
+  formData.append('name', document.querySelector('#name').value);
+  formData.append('description', document.querySelector('#description').value);
+  formData.append('complete', document.querySelector('#complete').checked);
+  
+  const completedAt = document.querySelector('#completed_at').value;
+  if (completedAt) {
+    formData.append('completed_at', completedAt);
+  }
 
-    axiosInstance
-      .put(`${TODO_API_UPDATE_URL}${pk}/`, data)
-      .then(response => {
-        alert('할 일이 성공적으로 수정되었습니다.');
-        redirectToDetail(pk);        
-      })
-      .catch(error => {
-        console.error('업데이트 중 오류 발생:', error);
-        alert('할 일 수정 중 오류가 발생했습니다.');
-      });
+  const exp = document.querySelector('#exp').value;
+  if (exp) {
+    formData.append('exp', parseInt(exp, 10));
+  }
+
+  const imageFile = document.querySelector('#image').files[0];
+  if (imageFile) {
+    formData.append('image', imageFile);
+  }
+
+  axiosInstance
+    .put(`${TODO_API_UPDATE_URL}${pk}/`, formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    })
+    .then(response => {
+      alert('할 일이 성공적으로 수정되었습니다.');
+      redirectToDetail(pk);
+    })
+    .catch(error => {
+      console.error('업데이트 중 오류 발생:', error.response?.data || error);
+      alert('할 일 수정 중 오류가 발생했습니다:\n' + JSON.stringify(error.response?.data, null, 2));
+    });
 }
+
 
 
 

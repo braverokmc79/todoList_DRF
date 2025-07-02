@@ -6,7 +6,7 @@
 {% if user.is_authenticated %}
     {# --- 검색바 추가 --- #}
     <div class="search-bar">
-        <input type="text" id="searchInput" placeholder="검색어를 입력하세요.">
+        <input type="search" id="searchInput" placeholder="검색어를 입력하세요.">
         <button id="searchBtn" class="btn">검색</button>
     </div>  
     {# --- 검색바끝 --- #}
@@ -257,70 +257,6 @@ function createTodoElement(todo) {
 
 
 
-function postComment(todoId, content, listElement) {
-  if (!content) return alert("댓글을 입력하세요");
-  axiosInstance.post("/api/interaction/comments/", { todo_pk: todoId, content: content })
-    .then(() => {
-      loadComments(todoId, listElement);
-
-      //댓글 등록 후 count 증가
-      const  todoElement = document.querySelector(`.todo-item`);
-      const countSpan =todoElement?.querySelector('.commentToggleBtn .count');
-
-      if (countSpan) {
-        const currentCount = parseInt(countSpan.textContent || '0', 10);
-        countSpan.textContent = currentCount + 1;
-      }
-
-
-
-    })
-    .catch(error => {
-      console.error("댓글 등록 실패:", error.response?.data || error);
-      alert("댓글 등록 실패:\n" + JSON.stringify(error.response?.data, null, 2));
-    });
-}
-
-function loadComments(todoId, listElement) {
-  axiosInstance.get(`/api/interaction/comments/`, { params: { todo_pk: todoId } })
-    .then(res => {
-      const payload = Array.isArray(res.data) ? res.data : Array.isArray(res.data.results) ? res.data.results : (res.data.data || []);
-      listElement.innerHTML = '';
-      payload.forEach(c => {
-        const li = document.createElement('li');
-        li.innerHTML = `${c.user.username || c.username}: ${c.content} 
-          <button class="comment-like-btn" data-id="${c.id}">👍 ${c.like_count}</button>`;
-        li.querySelector('.comment-like-btn')?.addEventListener('click', e => {
-          e.stopPropagation();
-          toggleCommentLike(c.id);
-        });
-        listElement.appendChild(li);
-      });
-    })
-    .catch(err => console.error('댓글 로드 실패:', err));
-}
-
-function toggleCommentLike(commentId) {
- axiosInstance.post(`/api/interaction/commentlikes/${commentId}/toggle/`)
-    .then(res => {
-      // 좋아요 처리 성공 후 전체 댓글 다시 로드
-      const commentBtn = document.querySelector(`.comment-like-btn[data-id="${commentId}"]`);
-      const todoElement = commentBtn.closest('.todo-item');
-      const todoId = todoElement?.querySelector('.likeBtn')?.dataset?.id;
-      const listElement = todoElement?.querySelector('.commentList');
-
-      if (todoId && listElement) {
-        loadComments(todoId, listElement);
-      }
-    })
-    .catch(err => console.error("댓글 좋아요 실패:", err));
-}
-
-
-
-
-
-
 // 3-3-2. 완료 버튼 클릭 시 해당 Todo 항목을 완료 상태로 변경
 //주소 요청이 들어오면 complete을 true로 변경하고, loadTodoList 함수를 실행해라.아니면 완료 실패 메시지를 콘솔로그에 띄워라
 function toComplete(id) { //매개변수 이름 todo.id 값이 전달됨
@@ -329,6 +265,8 @@ function toComplete(id) { //매개변수 이름 todo.id 값이 전달됨
         .catch(err => console.error('완료 처리 실패:', err));
 }
 
+
+
 // 3-3-3. 상세 페이지로 이동
 function detailView(id) {
     window.location.href = `/todo/detail/${id}/`;
@@ -336,16 +274,14 @@ function detailView(id) {
 
 
 
-// 3-4. 페이지네이션 구성 (← 이전, 1 2 3, → 다음)
 
+// 3-4. 페이지네이션 구성 (← 이전, 1 2 3, → 다음)
 function renderPagination(data, currentPage) {
     const wrapper = document.querySelector('.pagination');
     wrapper.innerHTML = '';
-
     console.log(" data.total_count  ",data.total_count);
     
     //const totalPages = Math.ceil(data.total_count / 5); // ← settings.py의 PAGE_SIZE 기준
-
     const  totalPages = data.page_count
 
     // 이전 버튼
@@ -377,32 +313,6 @@ function renderPagination(data, currentPage) {
 
 
 
-// 좋아요 토글 함수
-function toggleLike(id) {
-    axiosInstance.post(`/api/interaction/likes/${id}/toggle/`)
-        .then(res => {
-            const { is_liked, like_count } = res.data;
-            const btn = document.querySelector(`.likeBtn[data-id="${id}"]`);
-            if (btn) btn.innerHTML = `${is_liked ? '💔' : '❤️'} <span class="count">${like_count}</span>`;
-        })
-        .catch(err => console.error(" 좋아요 토글 실패:", err));
-}
-
-
-
-
-function toggleBookmark(id) {
-    axiosInstance.post(`/api/interaction/bookmarks/${id}/toggle/`)
-        .then(res => {
-            const { is_bookmarked, bookmark_count } = res.data;
-            console.log(`is_bookmarked: ${is_bookmarked}, bookmark_count: ${bookmark_count}`);
-            const btn = document.querySelector(`.bookmarkBtn[data-bookmark-id="${id}"]`);
-            if (btn) btn.innerHTML = `🔖 <span class="count">${bookmark_count}</span>`;
-        })
-        .catch(err => console.error(' 북마크 토글 실패:', err));
-}
-
-
 // ✅ 이벤트 위임 방식 추가 (비동기 렌더링 문제 해결)
 document.addEventListener('click', function(e) {
     const likeBtn = e.target.closest('.likeBtn');
@@ -419,8 +329,9 @@ document.addEventListener('click', function(e) {
         return;
     }
 });
+
 </script>
 
-
+<script src="{% static 'js/todoCommon.js' %}"></script>
 
 {% endblock content %}

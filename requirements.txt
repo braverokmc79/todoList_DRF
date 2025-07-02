@@ -32,3 +32,4 @@ django-debug-toolbar
 django-jazzmin>=2.6.0       # 세련된 Bootstrap 기반 Django Admin 테마
 django-unfold>=0.20.0       # Tailwind 기반 Admin 테마 (https://github.com/unfoldadmin/unfold)
 psycopg2-binary>=2.9
+dj-database-url

@@ -8,6 +8,7 @@
         <a href="#" id="logoutBtn" class="menu-link logout-link">🚪 로그아웃</a>
       {% else %}
         <a class="menu-link" href="{% url 'rest_framework:login' %}?next={% url 'todo:todo_List' %}">🔐 로그인</a>
+        <a class="menu-link" href="{% url 'signup' %}">🆕 회원가입</a>
       {% endif %}
     </div>
 </div>

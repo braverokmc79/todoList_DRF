@@ -13,11 +13,15 @@ from rest_framework_simplejwt.views import (
 )
 
 urlpatterns = [
+    
     path('admin/', admin.site.urls),
     path("todo/", include("todo.urls")),
     path("", lambda request:redirect("todo:todo_List") ),
     path("api-auth/", include("rest_framework.urls")  , name="login"),
-    path("accounts/", include("django.contrib.auth.urls")),
+    
+    path("accounts/", include("django.contrib.auth.urls")),  # 기본 인증
+    path("accounts/", include("accounts.urls")),              # 회원가입 추가
+    
     
     
     # ✅ JWT 로그인/리프레시 추가
